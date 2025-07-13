@@ -1,0 +1,8 @@
+FILE_NAMES
+2
+GameData/Player_1/Default_Map_Character_Data.txt
+NOT_PLAYER_CHARACTER_FILE
+DEFAULT_MAP_ONE
+GameData/Player_1/MapEnemyDatas/Map24_Boss_Data.txt
+NOT_PLAYER_CHARACTER_FILE
+MAP_TWENTY_FOUR
