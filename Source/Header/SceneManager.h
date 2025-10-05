@@ -46,8 +46,6 @@ private:
 
     int mnPlayerDataNumber;   // 初期値-1
 
-    std::vector<MAP_DATA> msMapDatas;
-
     bool mbAsyncFlag;   // 非同期フラグ
 
     int mnLoadingHandle;    // ローディング動画ハンドル

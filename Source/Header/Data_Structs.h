@@ -3,10 +3,9 @@
 #include <string>
 #include <vector>
 
-/*
+
 #include "DxLib.h"
-#include "../Header/Scene_Enum.h"
-#include "../Header/Status_Struct.h"/*/
+#include "Scene_Enum.h"
 #include "Status_Struct.h"
 
 typedef struct Data_Name

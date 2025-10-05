@@ -24,7 +24,6 @@
     <ClCompile Include="Source\Cpp\Calculation.cpp" />
     <ClCompile Include="Source\Cpp\Camera.cpp" />
     <ClCompile Include="Source\Cpp\CoordinateXY.cpp" />
-    <ClCompile Include="Source\Cpp\DataController.cpp" />
     <ClCompile Include="Source\Cpp\DataManager.cpp" />
     <ClCompile Include="Source\Cpp\EnemyBattle.cpp" />
     <ClCompile Include="Source\Cpp\EnemyBattleBoss.cpp" />
@@ -75,7 +74,6 @@
     <ClInclude Include="Source\Header\Camera.h" />
     <ClInclude Include="Source\Header\CharacterType_Enum.h" />
     <ClInclude Include="Source\Header\CoordinateXY.h" />
-    <ClInclude Include="Source\Header\DataController.h" />
     <ClInclude Include="Source\Header\DataManager.h" />
     <ClInclude Include="Source\Header\DataManagerMacro.h" />
     <ClInclude Include="Source\Header\Data_Structs.h" />

@@ -298,13 +298,13 @@ void EnemyBattle::EndProcess()
 
             if (mpPlayer != nullptr)
             {
-                PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber());
+                PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayPlayerData();//->GetPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber());
                 playerData.characterData.status = mpPlayer->GetStatus();
                 for (int i = 0; i < msStatus.level; i++) {
                     playerData.characterData.status.exp += GetRand(5);
                 }
                 // レベルアップ確認
-                LEVEL_DATA levelData = Master::mpGameManager->GetDataManager()->GetLevelData();
+                LEVEL_DATA levelData = Master::mpGameManager->GetDataManager()->GetAllData(true);
                 bool levelUpFlag = true;
                 while (levelUpFlag) {
                     if (levelData.levelUpExpNumber[(playerData.characterData.status.level - 1)] <= playerData.characterData.status.exp && (levelData.maxLevelNumber > playerData.characterData.status.level)) {
@@ -326,7 +326,7 @@ void EnemyBattle::EndProcess()
                     }
                 }
 
-                Master::mpGameManager->GetDataManager()->Set_MyPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber(), playerData);
+                Master::mpGameManager->GetDataManager()->SetPlayPlayerData(playerData);
             }
         }
     }

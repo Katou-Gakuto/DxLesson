@@ -605,12 +605,10 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 			*file >> setFileNameData.fileName;
 			*file >> setFileNameData.fileTypeName;
 
-			/*
-			* 【必要シーンを取得】
-			*/
-			std::string sceneName;// 仮処置
-			*file >> sceneName;
-			setFileNameData.sceneType = TITLE;
+			//【必要シーンを取得】
+			int sceneType;
+			*file >> sceneType;
+			setFileNameData.sceneType = (SCENE)sceneType;
 
 			fileNameData.push_back(setFileNameData);
 		}
