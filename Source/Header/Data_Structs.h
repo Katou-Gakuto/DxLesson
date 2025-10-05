@@ -3,9 +3,11 @@
 #include <string>
 #include <vector>
 
+/*
 #include "DxLib.h"
 #include "../Header/Scene_Enum.h"
-#include "../Header/Status_Struct.h"
+#include "../Header/Status_Struct.h"/*/
+#include "Status_Struct.h"
 
 typedef struct Data_Name
 {
@@ -62,16 +64,6 @@ typedef struct Player_Data
 
 }PLAYER_DATA;
 
-typedef struct MapData
-{
-    DATA_STRUCT templateData;   // 基本データ
-
-    int typeNameTypeNumber; // 種類数
-
-    std::vector<std::string> typeName;   // タイプ名
-    std::vector<int> typeNumber;    // タイプ必要数
-}MAP_DATA;
-
 typedef struct LevelData
 {
     int maxLevelNumber; // 最大レベル
@@ -80,21 +72,98 @@ typedef struct LevelData
 }LEVEL_DATA;
 
 
-typedef struct OneData
+union DATAS
+{
+    /*---*  データを全種類持つ  *---*/
+    std::vector<DATA_NAME> fileNameDatas;       // ファイルネームデータズ
+    std::vector<CHARACTER_DATA> characterDatas; // キャラクターデータズ
+    LEVEL_DATA levelData;                       // レベルデータ
+    /*---*                      *---*/
+
+    DATAS()
+    {
+        levelData.levelNumber.clear();
+        levelData.levelUpExpNumber.clear();
+        levelData.maxLevelNumber = 0;
+    }
+    ~DATAS()
+    {
+        levelData.levelNumber.clear();
+        levelData.levelUpExpNumber.clear();
+        levelData.maxLevelNumber = 0;
+    }
+};
+
+struct OneData
 {
     bool dataChangeFlag = false;    // 変更フラグ
 
     DATA_STRUCT fileNameAndType; // ファイル名とタイプ名
 
-    /*---*  データを全種類持つ  *---*/
-    std::vector<DATA_NAME> fileNameDatas;       // ファイルネームデータズ
-    std::vector<CHARACTER_DATA> characterDatas; // キャラクターデータズ
-    std::vector<MAP_DATA> mapDatas;             // マップデータズ
-    LEVEL_DATA levelData;                       // レベルデータ
-    /*---*                      *---*/
+    DATAS datas;    // データ群
+    
+    OneData(const OneData& src)
+    {
+        dataChangeFlag = src.dataChangeFlag;
+        fileNameAndType = src.fileNameAndType;
+
+        if (src.fileNameAndType.typeName == "")
+        {
+            datas.fileNameDatas = src.datas.fileNameDatas;
+        }
+        else if (src.fileNameAndType.typeName == "")
+        {
+            datas.characterDatas = src.datas.characterDatas;
+        }
+        else if (src.fileNameAndType.typeName == "")
+        {
+            datas.levelData = src.datas.levelData;
+        }
+    }
+    OneData()
+    {
+        dataChangeFlag = false;
+        fileNameAndType.name.clear();
+        fileNameAndType.typeName.clear();
+
+        datas.levelData.levelNumber.clear();
+        datas.levelData.levelUpExpNumber.clear();
+        datas.levelData.maxLevelNumber = 0;
+    }
+    ~OneData()
+    {
+        dataChangeFlag = false;
+        fileNameAndType.name.clear();
+        fileNameAndType.typeName.clear();
+
+        datas.levelData.levelNumber.clear();
+        datas.levelData.levelUpExpNumber.clear();
+        datas.levelData.maxLevelNumber = 0;
+    }
+
+    OneData& operator=(const OneData& src)
+    {
+        dataChangeFlag = src.dataChangeFlag;
+        fileNameAndType = src.fileNameAndType;
+
+        if (src.fileNameAndType.typeName == "")
+        {
+            datas.fileNameDatas = src.datas.fileNameDatas;
+        }
+        else if (src.fileNameAndType.typeName == "")
+        {
+            datas.characterDatas = src.datas.characterDatas;
+        }
+        else if (src.fileNameAndType.typeName == "")
+        {
+            datas.levelData = src.datas.levelData;
+        }
+
+        return *this;
+    }
 };
 
-typedef struct OnePlayerAllData
+struct OnePlayerAllData
 {
     bool dataFlag = false; // データ存在フラグ
 
