@@ -103,24 +103,28 @@ void DataManager::Init(std::string startFileName)
 				switch ((DataType)setData.fileNameAndType.typeNumber)
 				{
 				case DataType::PLAYER:
-						mstrPlayerDatasFileName = setData.fileNameAndType.name;
-						int playerNumber;
-						baseDataFile >> playerNumber;
-						mstPlayerDatas.reserve(playerNumber);
-						for (int i = 0; i < playerNumber; i++)
-						{
-							mstPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
-						}
+				{
+					mstrPlayerDatasFileName = setData.fileNameAndType.name;
+					int playerNumber;
+					baseDataFile >> playerNumber;
+					mstPlayerDatas.reserve(playerNumber);
+					for (int i = 0; i < playerNumber; i++)
+					{
+						mstPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
+					}
+				}
 						break;
 
 				case DataType::INIT_PLAYER:
-						int playerNumber;
-						baseDataFile >> playerNumber;
-						mstInitPlayerDatas.reserve(playerNumber);
-						for (int i = 0; i < playerNumber; i++)
-						{
-							mstInitPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
-						}
+				{
+					int playerNumber;
+					baseDataFile >> playerNumber;
+					mstInitPlayerDatas.reserve(playerNumber);
+					for (int i = 0; i < playerNumber; i++)
+					{
+						mstInitPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
+					}
+				}
 				break;
 
 				default:
