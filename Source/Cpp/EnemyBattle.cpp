@@ -304,7 +304,8 @@ void EnemyBattle::EndProcess()
                     playerData.characterData.status.exp += GetRand(5);
                 }
                 // レベルアップ確認
-                LEVEL_DATA levelData = Master::mpGameManager->GetDataManager()->GetAllData(true);
+                std::vector<OneData> allData = Master::mpGameManager->GetDataManager()->GetAllData(true);
+                LEVEL_DATA levelData = Master::mpGameManager->GetDataManager()->GetLevelData(allData, playerData.characterData.templateData.typeNumber);
                 bool levelUpFlag = true;
                 while (levelUpFlag) {
                     if (levelData.levelUpExpNumber[(playerData.characterData.status.level - 1)] <= playerData.characterData.status.exp && (levelData.maxLevelNumber > playerData.characterData.status.level)) {

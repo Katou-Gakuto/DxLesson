@@ -31,6 +31,11 @@ private:
 	// 取得済みデータ場所保存用
 	std::map<SCENE, std::list<int>> mmGetFilePosNumbers;
 
+	std::list<std::string> msDeleteItemName;
+
+	// 失敗フラグ
+	bool mbFailureFlag;
+
 public:
 	// コンストラクタ
 	DataManager(std::string startFileName);
@@ -58,16 +63,30 @@ public:
 	void PlayDataDelete(int playerNumber);
 
 	// 一種類分データを取得
-	OneData GetOneData(std::string fileName, std::string fileTypeName, bool baseFlag = false);
+	OneData GetOneData(std::string fileName, int fileType, bool baseFlag = false);
 	// 指定のシーンに必要な全データを取得
 	std::vector<OneData> GetSceneData(SCENE sceneName);
 	// 全データを取得
 	std::vector<OneData> GetAllData(bool baseFlag = false);
 	
 	// 一種類分データを変更
-	void ChangeOneData(OneData data, std::string fileName, std::string fileTypeName);
+	void ChangeOneData(OneData data, std::string fileName, int fileType);
 	// 全データを変更
 	void ChangeAllData(std::vector<OneData> data);
+
+	// 削除アイテム設定
+	void SetDeleteItem(std::string name);
+	// 削除する必要があるアイテムを削除する
+	void DeleteItemIfNeeded();
+
+	// ファイルオープン失敗フラグ
+	bool GetFailureFlag() { return mbFailureFlag; }
+
+	// 渡されたデータから指定のキャラクタータイプのレベルデータを取得する
+	static LEVEL_DATA GetLevelData(std::vector<OneData> data, int characterType);
+
+	// 渡されたデータから指定のキャラクターデータを取得する
+	//static std::vector<CHARACTER_DATA> GetCharacterData(std::vector<OneData> data, std::string fileName);
 
 private:
 	/*ファイルデータ読み込み用(OneData)*/

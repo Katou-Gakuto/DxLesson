@@ -44,6 +44,7 @@ public:
     void Initilize();                                                           // 初期化処理
     void Finalize();                                                            // 終了処理
     void Update();                                                              // 更新処理
+    void DeleteAllIfNeeded();                                                   // 削除する必要がある物を削除する
     void Draw();                                                                // 描画処理
 
     void UpdateEndSetProcess(); // 更新時終了フラグ更新処理

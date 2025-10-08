@@ -101,12 +101,12 @@ void EnemyMap::Update()
             // プレイヤーデータ入力
             if (mpPlayer != nullptr)
             {
-                PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber());
+                PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayPlayerData();
                 playerData.characterData.position = mpPlayer->GetObjectPosition();
                 playerData.characterData.status = mpPlayer->GetStatus();
                 playerData.characterData.angle = mpPlayer->GetObjectAngle();
 
-                Master::mpGameManager->GetDataManager()->Set_MyPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber(), playerData);
+                Master::mpGameManager->GetDataManager()->SetPlayPlayerData(playerData);
             }
         }
         else if (meObjectScene == SCENE::EXCEPTION) {
@@ -244,16 +244,14 @@ bool EnemyMap::PlayerCheck()
 */
 void EnemyMap::SetEnemyDataSurvivalFlag()
 {
-    CHARACTER_DATA setCharacterData;
-    std::vector<CHARACTER_DATA> characterData = Master::mpGameManager->GetDataManager()->GetData_CharacterFileDatas(mstrDataFileName);
-    for (int i = 0; i < characterData.size(); i++) {
-        if (characterData[i].templateData.name == mstrName) {
-            setCharacterData = characterData[i];
+    OneData oneData = Master::mpGameManager->GetDataManager()->GetOneData(mstrDataFileName, (int)DataType::CHARACTER);
+    for (int i = 0; i < oneData.datas.characterDatas.size(); ++i) {
+        if (oneData.datas.characterDatas[i].templateData.name == mstrName) {
+            oneData.datas.characterDatas[i].survivalFlag = false;
             break;
         }
     }
-    setCharacterData.survivalFlag = false;
-    Master::mpGameManager->GetDataManager()->ChangeFile_CharacterFileData(mstrDataFileName, mstrName, setCharacterData);
+    Master::mpGameManager->GetDataManager()->ChangeOneData(oneData, mstrDataFileName, (int)DataType::CHARACTER);
 }
 
 /*
@@ -262,5 +260,13 @@ void EnemyMap::SetEnemyDataSurvivalFlag()
 */
 void EnemyMap::SetDeleteData()
 {
-    Master::mpGameManager->GetDataManager()->DeleteFile_CharacterFileData(mstrDataFileName, mstrName);
+    CHARACTER_DATA deleteCharacter;
+    OneData oneData = Master::mpGameManager->GetDataManager()->GetOneData(mstrDataFileName, (int)DataType::CHARACTER);
+    for (int i = 0; i < oneData.datas.characterDatas.size(); ++i) {
+        if (oneData.datas.characterDatas[i].templateData.name == mstrName) {
+            oneData.datas.characterDatas.erase(oneData.datas.characterDatas.begin() + i);
+            break;
+        }
+    }
+    Master::mpGameManager->GetDataManager()->ChangeOneData(oneData, mstrDataFileName, (int)DataType::CHARACTER);
 }

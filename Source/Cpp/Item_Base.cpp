@@ -13,14 +13,13 @@ Item_Base::Item_Base(ITEM_DATA item)
     mnItemHandle = Master::mpGameManager->GerGraphManager()->GetGraphNumber(item.itemPhotoFileName.c_str(), true);
 
     mnItemType = -1;
-    if (item.templateData.typeName == "RecoveryMedicine(Small)") {
+    switch ((ItemType)item.templateData.typeNumber)
+    {
+    case ItemType::RECOVERY_MEDICIN_SMALL:
+    case ItemType::RECOVERY_MEDICIN_MEDIUM:
+    case ItemType::RECOVERY_MEDICIN_LARGE:
         mnItemType = 0;
-    }
-    if (item.templateData.typeName == "RecoveryMedicine(Medium)") {
-        mnItemType = 0;
-    }
-    if (item.templateData.typeName == "RecoveryMedicine(Large)") {
-        mnItemType = 0;
+        break;
     }
 }
 

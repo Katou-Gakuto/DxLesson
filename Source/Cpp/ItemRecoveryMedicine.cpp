@@ -35,7 +35,7 @@ void ItemRecoveryMedicine::ItemEffect(Object_Base_Character *character)
 
         mnItemNumber -= 1;
         if (mnItemNumber <= 0) {
-            Master::mpGameManager->GetDataManager()->DeleteItem(mstrDisplayName);
+            Master::mpGameManager->GetDataManager()->SetDeleteItem(mstrDisplayName);
         }
     }
 }

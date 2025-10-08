@@ -7,6 +7,24 @@
 #include "DxLib.h"
 #include "Scene_Enum.h"
 #include "Status_Struct.h"
+#include "Item_Base.h"
+
+
+enum class DataType
+{
+    FILE_NAME = 0,
+    CHARACTER,
+    PLAYER,
+    INIT_PLAYER,
+    LEVEL,
+};
+
+enum class ItemType
+{
+    RECOVERY_MEDICIN_SMALL = 0,
+    RECOVERY_MEDICIN_MEDIUM,
+    RECOVERY_MEDICIN_LARGE,
+};
 
 typedef struct Data_Name
 {
@@ -19,7 +37,7 @@ typedef struct Data_Struct
 {
     std::string name;   // 名前
 
-    std::string typeName;   // タイプ名
+    int typeNumber;   // タイプナンバー
 
 }DATA_STRUCT;
 
@@ -44,7 +62,6 @@ typedef struct ItemData
     int possessionCount;    // 所持数
 
     std::string itemPhotoFileName;  // アイテム画像のファイルネーム
-
 }ITEM_DATA;
 
 typedef struct Player_Data
@@ -61,6 +78,9 @@ typedef struct Player_Data
     */
     std::vector<ITEM_DATA> itemData;
 
+    // アイテム
+    std::vector<Item_Base *> item;
+
 }PLAYER_DATA;
 
 typedef struct LevelData
@@ -68,8 +88,8 @@ typedef struct LevelData
     int maxLevelNumber; // 最大レベル
     std::vector<int> levelNumber;   // レベル
     std::vector<int> levelUpExpNumber;  // 次のレベルまで必要な経験値
+    int characterType;  // キャラクタータイプ
 }LEVEL_DATA;
-
 
 union DATAS
 {
@@ -84,12 +104,14 @@ union DATAS
         levelData.levelNumber.clear();
         levelData.levelUpExpNumber.clear();
         levelData.maxLevelNumber = 0;
+        levelData.characterType = 0;
     }
     ~DATAS()
     {
         levelData.levelNumber.clear();
         levelData.levelUpExpNumber.clear();
         levelData.maxLevelNumber = 0;
+        levelData.characterType = 0;
     }
 };
 
@@ -106,15 +128,15 @@ struct OneData
         dataChangeFlag = src.dataChangeFlag;
         fileNameAndType = src.fileNameAndType;
 
-        if (src.fileNameAndType.typeName == "")
+        if (src.fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
         {
             datas.fileNameDatas = src.datas.fileNameDatas;
         }
-        else if (src.fileNameAndType.typeName == "")
+        else if (src.fileNameAndType.typeNumber == (int)DataType::CHARACTER)
         {
             datas.characterDatas = src.datas.characterDatas;
         }
-        else if (src.fileNameAndType.typeName == "")
+        else if (src.fileNameAndType.typeNumber == (int)DataType::LEVEL)
         {
             datas.levelData = src.datas.levelData;
         }
@@ -123,21 +145,23 @@ struct OneData
     {
         dataChangeFlag = false;
         fileNameAndType.name.clear();
-        fileNameAndType.typeName.clear();
+        fileNameAndType.typeNumber = -1;
 
         datas.levelData.levelNumber.clear();
         datas.levelData.levelUpExpNumber.clear();
         datas.levelData.maxLevelNumber = 0;
+        datas.levelData.characterType = 0;
     }
     ~OneData()
     {
         dataChangeFlag = false;
         fileNameAndType.name.clear();
-        fileNameAndType.typeName.clear();
+        fileNameAndType.typeNumber = -1;
 
         datas.levelData.levelNumber.clear();
         datas.levelData.levelUpExpNumber.clear();
         datas.levelData.maxLevelNumber = 0;
+        datas.levelData.characterType = 0;
     }
 
     OneData& operator=(const OneData& src)
@@ -145,15 +169,15 @@ struct OneData
         dataChangeFlag = src.dataChangeFlag;
         fileNameAndType = src.fileNameAndType;
 
-        if (src.fileNameAndType.typeName == "")
+        if (src.fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
         {
             datas.fileNameDatas = src.datas.fileNameDatas;
         }
-        else if (src.fileNameAndType.typeName == "")
+        else if (src.fileNameAndType.typeNumber == (int)(DataType::CHARACTER))
         {
             datas.characterDatas = src.datas.characterDatas;
         }
-        else if (src.fileNameAndType.typeName == "")
+        else if (src.fileNameAndType.typeNumber == (int)DataType::LEVEL)
         {
             datas.levelData = src.datas.levelData;
         }

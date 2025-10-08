@@ -23,4 +23,6 @@ public:
 	virtual void ItemEffect(Object_Base_Character *character) = 0;	// アイテム効果
 
 	int GetItemNumber() { return mnItemNumber; }	// アイテム数を取得
+
+	std::string GetItemName() { return mstrDisplayName; }	// アイテム名取得
 };

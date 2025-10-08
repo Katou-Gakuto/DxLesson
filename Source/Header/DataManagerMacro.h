@@ -8,8 +8,4 @@
 
 #define NOT_PLAYER_CHARACTER_FILE_NAME "NOT_PLAYER_CHARACTER_FILE"   // プレイヤー以外のキャラクター用ファイル名
 
-#define ITEM_FILE_NAME "ITEM_FILE"  // アイテム用ファイル名
-#define GEAR_FILE_NAME "GEAR_FILE"  // 装備用ファイル名
-#define MAP_FILE_NAME "MAP_FILE"    // マップ用ファイル名
-
 #define LEVEL_FILE_NAME "LEVEL_FILE"    // レベル用ファイル名

@@ -6,15 +6,21 @@
 
 #include "../Header/DataManager.h"
 
+#include "../Header/DataManagerMacro.h"
+
+#include "../Header/ItemRecoveryMedicine.h"
 
 
 // コンストラクタ
 DataManager::DataManager(std::string startFileName)
 : mnPlayPlayerDataNumber(-1)
 {
+	mbFailureFlag = false;
+
 	mstBaseData = OnePlayerAllData();
 	mstBaseData.dataFlag = false;
 	mstBaseData.playerData.dataFlag = false;
+	mstBaseData.playerData.item.clear();
 	mstBaseData.oneDatas.clear();
 
 	mstInitPlayerDatas.clear();
@@ -22,12 +28,15 @@ DataManager::DataManager(std::string startFileName)
 	mstPlayPlayerData = OnePlayerAllData();
 	mstPlayPlayerData.dataFlag = false;
 	mstPlayPlayerData.playerData.dataFlag = false;
+	mstPlayPlayerData.playerData.item.clear();
 	mstPlayPlayerData.oneDatas.clear();
 
 	mstPlayerDatas.clear();
 	mstrPlayerDatasFileName.clear();
 
 	mmGetFilePosNumbers.clear();
+
+	msDeleteItemName.clear();
 
 	Init(startFileName);
 }
@@ -36,6 +45,11 @@ DataManager::DataManager(std::string startFileName)
 DataManager::~DataManager()
 {
 	mstPlayerDatas.clear();
+
+	for (int i = 0; i < mstPlayPlayerData.playerData.item.size(); i++)
+	{
+		delete mstPlayPlayerData.playerData.item[i];
+	}
 }
 
 // 初期化
@@ -47,7 +61,7 @@ void DataManager::Init(std::string startFileName)
 		OneData setData;
 		setData.dataChangeFlag = false;
 		setData.fileNameAndType.name = startFileName;
-		setData.fileNameAndType.typeName.clear();
+		setData.fileNameAndType.typeNumber = 0;
 		mstBaseData.dataFlag = false;
 		mstBaseData.oneDatas.clear();
 
@@ -58,20 +72,21 @@ void DataManager::Init(std::string startFileName)
 		if (baseNameDataFile.is_open())
 		{
 			// ファイル確認
-			baseNameDataFile >> setData.fileNameAndType.typeName;
-			if (setData.fileNameAndType.typeName == "ファイル名ファイルタイプ")
+			baseNameDataFile >> setData.fileNameAndType.typeNumber;
+			if (setData.fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
 			{
 				setData = GetOneFileData(setData.fileNameAndType, &baseNameDataFile);
 			}
 		}
 		else {
+			mbFailureFlag = true;
 			return;
 		}
 
 		baseNameDataFile.close();
 		mstBaseData.oneDatas.push_back(setData);
 		setData.fileNameAndType.name.clear();
-		setData.fileNameAndType.typeName.clear();
+		setData.fileNameAndType.typeNumber = -1;
 
 		// ファイル名に保存されているファイルをすべて取得する
 		for (DATA_NAME fileNameData : mstBaseData.oneDatas[0].datas.fileNameDatas)
@@ -84,42 +99,45 @@ void DataManager::Init(std::string startFileName)
 
 			if (baseDataFile.is_open())
 			{
-				baseDataFile >> setData.fileNameAndType.typeName;
-				if (setData.fileNameAndType.typeName == "プレイヤーデータファイルタイプ")
+				baseDataFile >> setData.fileNameAndType.typeNumber;
+				switch ((DataType)setData.fileNameAndType.typeNumber)
 				{
-					mstrPlayerDatasFileName = setData.fileNameAndType.name;
-					int playerNumber;
-					baseDataFile >> playerNumber;
-					mstPlayerDatas.reserve(playerNumber);
-					for (int i = 0; i < playerNumber; i++)
-					{
-						mstPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
-					}
-				}
-				else if (setData.fileNameAndType.typeName == "初期化用プレイヤーデータファイルタイプ")
-				{
-					int playerNumber;
-					baseDataFile >> playerNumber;
-					mstInitPlayerDatas.reserve(playerNumber);
-					for (int i = 0; i < playerNumber; i++)
-					{
-						mstInitPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
-					}
-				}
-				else
-				{
-					setData = GetOneFileData(setData.fileNameAndType, &baseDataFile);
-					mstBaseData.oneDatas.push_back(setData);
+				case DataType::PLAYER:
+						mstrPlayerDatasFileName = setData.fileNameAndType.name;
+						int playerNumber;
+						baseDataFile >> playerNumber;
+						mstPlayerDatas.reserve(playerNumber);
+						for (int i = 0; i < playerNumber; i++)
+						{
+							mstPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
+						}
+						break;
+
+				case DataType::INIT_PLAYER:
+						int playerNumber;
+						baseDataFile >> playerNumber;
+						mstInitPlayerDatas.reserve(playerNumber);
+						for (int i = 0; i < playerNumber; i++)
+						{
+							mstInitPlayerDatas.push_back(GetPlayerFileData(&baseDataFile));
+						}
+				break;
+
+				default:
+						setData = GetOneFileData(setData.fileNameAndType, &baseDataFile);
+						mstBaseData.oneDatas.push_back(setData);
+						break;
 				}
 			}
 			else
 			{
+				mbFailureFlag = true;
 				return;
 			}
 
 			baseDataFile.close();
 			setData.fileNameAndType.name.clear();
-			setData.fileNameAndType.typeName.clear();
+			setData.fileNameAndType.typeNumber = -1;
 		}
 
 		mstBaseData.dataFlag = true;
@@ -151,6 +169,11 @@ void DataManager::Save()
 					SetPlayerFileData(mstPlayerDatas[i], &setPlayerFileData);
 				}
 			}
+			else
+			{
+				mbFailureFlag = true;
+				return;
+			}
 
 			// ファイル閉じる
 			setPlayerFileData.close();
@@ -168,6 +191,11 @@ void DataManager::Save()
 					if (setPlayerFileData.is_open())
 					{
 							SetOneFileData(oneData, &setPlayerFileData);
+					}
+					else
+					{
+						mbFailureFlag = true;
+						return;
 					}
 
 					setPlayerFileData.close();
@@ -195,19 +223,49 @@ void DataManager::SetPlayPlayer(int playerNumber)
 		{
 			// プレイヤーデータ初期化
 			{
+				for (int i = 0; i < mstPlayPlayerData.playerData.item.size(); i++)
+				{
+					delete mstPlayPlayerData.playerData.item[i];
+				}
+
+				mstPlayPlayerData.playerData.item.clear();
+
 				mmGetFilePosNumbers.clear();
 
 				mnPlayPlayerDataNumber = playerNumber;
 				mstPlayPlayerData.dataFlag = false;
 				mstPlayPlayerData.playerData = mstPlayerDatas[playerNumber];
 				mstPlayPlayerData.oneDatas.clear();
+
+				for (int i = 0; i < mstPlayPlayerData.playerData.itemNumber; i++) {
+
+					Item_Base* itemBase;
+					ITEM_DATA checkItemData = mstPlayPlayerData.playerData.itemData[i];
+
+					switch ((ItemType)checkItemData.templateData.typeNumber)
+					{
+					case ItemType::RECOVERY_MEDICIN_SMALL:
+						itemBase = new ItemRecoveryMedicine(checkItemData, 30);
+						break;
+						
+					case ItemType::RECOVERY_MEDICIN_MEDIUM:
+						itemBase = new ItemRecoveryMedicine(checkItemData, 100);
+						break;
+						
+					case ItemType::RECOVERY_MEDICIN_LARGE:
+						itemBase = new ItemRecoveryMedicine(checkItemData, 500);
+						break;
+					}
+
+					mstPlayPlayerData.playerData.item.push_back(itemBase);
+				}
 			}
 
 			// データ設定用初期化
 			OneData setData;
 			setData.dataChangeFlag = false;
 			setData.fileNameAndType.name = mstPlayPlayerData.playerData.playerFolderName + "/FileNames_Data.txt";
-			setData.fileNameAndType.typeName.clear();
+			setData.fileNameAndType.typeNumber = -1;
 
 			// ファイルを開ける
 			std::ifstream nameDataFile;
@@ -217,20 +275,22 @@ void DataManager::SetPlayPlayer(int playerNumber)
 			if (nameDataFile.is_open())
 			{
 				// ファイル確認
-				nameDataFile >> setData.fileNameAndType.typeName;
-				if (setData.fileNameAndType.typeName == "ファイル名ファイルタイプ")
+				nameDataFile >> setData.fileNameAndType.typeNumber;
+				if (setData.fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
 				{
 					setData = GetOneFileData(setData.fileNameAndType, &nameDataFile);
 				}
 			}
-			else {
+			else
+			{
+				mbFailureFlag = true;
 				return;
 			}
 
 			nameDataFile.close();
 			mstPlayPlayerData.oneDatas.push_back(setData);
 			setData.fileNameAndType.name.clear();
-			setData.fileNameAndType.typeName.clear();
+			setData.fileNameAndType.typeNumber = -1;
 
 
 			// ファイル名に保存されているファイルをすべて取得する
@@ -244,9 +304,9 @@ void DataManager::SetPlayPlayer(int playerNumber)
 
 				if (dataFile.is_open())
 				{
-					dataFile >> setData.fileNameAndType.typeName;
-					if (setData.fileNameAndType.typeName == "プレイヤーデータファイルタイプ" ||
-						setData.fileNameAndType.typeName == "初期化用プレイヤーデータファイルタイプ")
+					dataFile >> setData.fileNameAndType.typeNumber;
+					if (setData.fileNameAndType.typeNumber == (int)DataType::PLAYER ||
+						setData.fileNameAndType.typeNumber == (int)DataType::INIT_PLAYER)
 					{
 						return;
 					}
@@ -258,13 +318,16 @@ void DataManager::SetPlayPlayer(int playerNumber)
 				}
 				else
 				{
+					mbFailureFlag = true;
 					return;
 				}
 
 				dataFile.close();
 				setData.fileNameAndType.name.clear();
-				setData.fileNameAndType.typeName.clear();
+				setData.fileNameAndType.typeNumber = -1;
 			}
+
+
 		}
 
 		mstPlayPlayerData.dataFlag = true;
@@ -295,7 +358,7 @@ void DataManager::PlayDataDelete(int playerNumber)
 	/*
 	* 【ファイル名データに載っているファイルを全削除】
 	*/
-	if (mstPlayPlayerData.oneDatas[0].fileNameAndType.typeName == "ファイル名ファイルタイプ")
+	if (mstPlayPlayerData.oneDatas[0].fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
 	{
 		for (int i = 0; i < mstPlayPlayerData.oneDatas[0].datas.fileNameDatas.size(); i++)
 		{
@@ -322,14 +385,14 @@ void DataManager::PlayDataDelete(int playerNumber)
 }
 
 // 一種類分データを取得
-OneData DataManager::GetOneData(std::string fileName, std::string fileTypeName, bool baseFlag)
+OneData DataManager::GetOneData(std::string fileName, int fileType, bool baseFlag)
 {
 	if (baseFlag)
 	{
 		for (int i = 0; i < mstBaseData.oneDatas.size(); i++)
 		{
 			if ((mstBaseData.oneDatas[i].fileNameAndType.name == fileName) &&
-				(mstBaseData.oneDatas[i].fileNameAndType.name == fileTypeName))
+				(mstBaseData.oneDatas[i].fileNameAndType.typeNumber == fileType))
 			{
 				return mstBaseData.oneDatas[i];
 			}
@@ -340,7 +403,7 @@ OneData DataManager::GetOneData(std::string fileName, std::string fileTypeName, 
 		for (int i = 0; i < mstPlayPlayerData.oneDatas.size(); i++)
 		{
 			if ((mstPlayPlayerData.oneDatas[i].fileNameAndType.name == fileName) &&
-				(mstPlayPlayerData.oneDatas[i].fileNameAndType.name == fileTypeName))
+				(mstPlayPlayerData.oneDatas[i].fileNameAndType.typeNumber == fileType))
 			{
 				return mstPlayPlayerData.oneDatas[i];
 			}
@@ -350,8 +413,9 @@ OneData DataManager::GetOneData(std::string fileName, std::string fileTypeName, 
 	OneData nullData;
 	nullData.dataChangeFlag = false;
 	nullData.fileNameAndType.name.clear();
-	nullData.fileNameAndType.typeName.clear();
+	nullData.fileNameAndType.typeNumber = -1;
 
+	nullData.datas.levelData.characterType = -1;
 	nullData.datas.levelData.levelNumber.clear();
 	nullData.datas.levelData.levelUpExpNumber.clear();
 	nullData.datas.levelData.maxLevelNumber = -1;
@@ -384,7 +448,7 @@ std::vector<OneData> DataManager::GetSceneData(SCENE sceneName)
 	// ベースファイルにいくつこのシーンの情報があるかを調べる
 	for (int i = 0; i < mstBaseData.oneDatas.size(); i++)
 	{
-		if (mstBaseData.oneDatas[i].fileNameAndType.typeName == "ファイル名ファイルタイプ")
+		if (mstBaseData.oneDatas[i].fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
 		{
 			for (int j = 0; j < mstBaseData.oneDatas[i].datas.fileNameDatas.size(); j++)
 			{
@@ -412,7 +476,7 @@ std::vector<OneData> DataManager::GetSceneData(SCENE sceneName)
 		fileNameDataPos.clear();
 		for (int i = 0; i < mstPlayPlayerData.oneDatas.size(); i++)
 		{
-			if (mstPlayPlayerData.oneDatas[i].fileNameAndType.typeName == "ファイル名ファイルタイプ")
+			if (mstPlayPlayerData.oneDatas[i].fileNameAndType.typeNumber == (int)DataType::FILE_NAME)
 			{
 				fileNameDataPos.push_back(i);
 			}
@@ -470,7 +534,7 @@ std::vector<OneData> DataManager::GetSceneData(SCENE sceneName)
 						DATA_NAME setFileName;
 						setFileName.sceneType = sceneName;
 						setFileName.fileName = setData.fileNameAndType.name;
-						setFileName.fileTypeName = setData.fileNameAndType.typeName;
+						setFileName.fileTypeName = setData.fileNameAndType.typeNumber;
 						mstPlayPlayerData.oneDatas[0].datas.fileNameDatas.push_back(setFileName);
 						break;
 					}
@@ -490,29 +554,30 @@ std::vector<OneData> DataManager::GetAllData(bool baseFlag)
 }
 
 // 一種類分データを変更
-void DataManager::ChangeOneData(OneData data, std::string fileName, std::string fileTypeName)
+void DataManager::ChangeOneData(OneData data, std::string fileName, int fileType)
 {
 	if (mstPlayPlayerData.dataFlag)
 	{
 		for (int i = 0; i < mstPlayPlayerData.oneDatas.size(); i++)
 		{
 			if ((mstPlayPlayerData.oneDatas[i].fileNameAndType.name == fileName) &&
-				(mstPlayPlayerData.oneDatas[i].fileNameAndType.typeName == fileTypeName))
+				(mstPlayPlayerData.oneDatas[i].fileNameAndType.typeNumber == fileType))
 			{
 				mstPlayPlayerData.oneDatas[i].dataChangeFlag = data.dataChangeFlag;
 
-
-				if (fileTypeName == "")
+				switch ((DataType)fileType)
 				{
+				case DataType::FILE_NAME:
 					mstPlayPlayerData.oneDatas[i].datas.fileNameDatas = data.datas.fileNameDatas;
-				}
-				else if (fileTypeName == "")
-				{
+					break;
+					
+				case DataType::CHARACTER:
 					mstPlayPlayerData.oneDatas[i].datas.characterDatas = data.datas.characterDatas;
-				}
-				else if (fileTypeName == "")
-				{
+					break;
+					
+				case DataType::LEVEL:
 					mstPlayPlayerData.oneDatas[i].datas.levelData = data.datas.levelData;
+					break;
 				}
 			}
 		}
@@ -528,15 +593,89 @@ void DataManager::ChangeAllData(std::vector<OneData> data)
 	}
 }
 
+// 削除アイテム設定
+void DataManager::SetDeleteItem(std::string name)
+{
+	for (int i = 0; i < mstPlayPlayerData.playerData.itemData.size(); i++)
+	{
+		if (name == mstPlayPlayerData.playerData.itemData[i].templateData.name)
+		{
+			mstPlayPlayerData.playerData.itemData.erase(mstPlayPlayerData.playerData.itemData.begin() + i);
+		}
+	}
+
+	msDeleteItemName.push_back(name);
+}
+
+// 削除する必要があるアイテムを削除する
+void DataManager::DeleteItemIfNeeded()
+{
+	for (auto it = msDeleteItemName.begin(); it != msDeleteItemName.end(); ++it)
+	{
+		for (int i = 0; i < mstPlayPlayerData.playerData.item.size(); i++)
+		{
+			if ((*it) == mstPlayPlayerData.playerData.item[i]->GetItemName())
+			{
+				delete mstPlayPlayerData.playerData.item[i];
+				mstPlayPlayerData.playerData.item.erase(mstPlayPlayerData.playerData.item.begin() + i);
+				break;
+			}
+		}
+	}
+
+	msDeleteItemName.clear();
+}
+
+// 渡されたデータから指定のキャラクタータイプのレベルデータを取得する
+LEVEL_DATA DataManager::GetLevelData(std::vector<OneData> data, int characterType)
+{
+	for (OneData oneData : data)
+	{
+		if (oneData.fileNameAndType.typeNumber == (int)DataType::LEVEL)
+		{
+			if (oneData.datas.levelData.characterType == characterType)
+			{
+				return oneData.datas.levelData;
+			}
+		}
+	}
+
+	LEVEL_DATA nullData;
+	nullData.characterType = -1;
+	nullData.levelNumber.clear();
+	nullData.levelUpExpNumber.clear();
+	nullData.maxLevelNumber = -1;
+	return nullData;
+}
+/*
+// 渡されたデータから指定のキャラクターデータを取得する
+std::vector<CHARACTER_DATA> DataManager::GetCharacterData(std::vector<OneData> data, std::string fileName)
+{
+	for (OneData oneData : data)
+	{
+		if (oneData.fileNameAndType.name == fileName)
+		{
+			return oneData.datas.characterDatas;
+		}
+	}
+
+	std::vector<CHARACTER_DATA> nullData;
+	nullData.clear();
+	return nullData;
+}*/
+
 // ファイルデータ読み込み用(OneData)
 OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 {
 	OneData resultData = OneData();
 	resultData.fileNameAndType = fileName;
 
-	if (resultData.fileNameAndType.typeName == "レベルデータファイルタイプ")
+	switch ((DataType)resultData.fileNameAndType.typeNumber)
+	{
+	case DataType::LEVEL:
 	{
 		LEVEL_DATA levelData;
+		*file >> levelData.characterType;
 		*file >> levelData.maxLevelNumber;
 
 		levelData.levelNumber.reserve(levelData.maxLevelNumber);
@@ -555,7 +694,9 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 
 		resultData.datas.levelData = levelData;
 	}
-	else if (resultData.fileNameAndType.typeName == "キャラクターデータファイルタイプ")
+		break;
+
+	case DataType::CHARACTER:
 	{
 		int dataNumber;
 		*file >> dataNumber;
@@ -568,7 +709,7 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 		{
 			CHARACTER_DATA setCharacterData;
 
-			*file >> setCharacterData.templateData.typeName;    // キャラクタータイプ
+			*file >> setCharacterData.templateData.typeNumber;    // キャラクタータイプ
 			*file >> setCharacterData.templateData.name;    // キャラクターの名前
 			*file >> setCharacterData.survivalFlag;    // キャラクターの生存フラグ
 			*file >> setCharacterData.status.level;    // レベル
@@ -589,7 +730,9 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 		}
 		resultData.datas.characterDatas = characterData;
 	}
-	else if (resultData.fileNameAndType.typeName == "ファイル名ファイルタイプ")
+		break;
+
+	case DataType::FILE_NAME:
 	{
 		// ファイル名情報読み取り
 		int dataNumber;
@@ -614,6 +757,8 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 		}
 		resultData.datas.fileNameDatas = fileNameData;
 	}
+		break;
+	}
 
 	return resultData;
 }
@@ -621,9 +766,12 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 // ファイルデータ書き込み用(OneData)
 void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 {
-	if (setData.fileNameAndType.typeName == "レベルデータファイルタイプ")
+	switch ((DataType)setData.fileNameAndType.typeNumber)
 	{
-		*file << setData.fileNameAndType.typeName;
+	case DataType::LEVEL:
+		*file << setData.fileNameAndType.typeNumber;
+		*file << "\n";
+		*file << setData.datas.levelData.characterType;
 		*file << "\n";
 		*file << setData.datas.levelData.maxLevelNumber;
 		*file << "\n";
@@ -634,16 +782,16 @@ void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 			*file << setData.datas.levelData.levelUpExpNumber[i];
 			*file << "\n";
 		}
-	}
-	else if (setData.fileNameAndType.typeName == "キャラクターデータファイルタイプ")
-	{
-		*file << setData.fileNameAndType.typeName;
+		break;
+
+	case DataType::CHARACTER:
+		*file << setData.fileNameAndType.typeNumber;
 		*file << "\n";
 		*file << setData.datas.characterDatas.size();
 		for (CHARACTER_DATA setCharacterData : setData.datas.characterDatas)
 		{
 			*file << '\n';
-			*file << setCharacterData.templateData.typeName;    // キャラクタータイプ
+			*file << setCharacterData.templateData.typeNumber;    // キャラクタータイプ
 			*file << '\n';
 			*file << setCharacterData.templateData.name;    // キャラクターの名前
 			*file << '\n';
@@ -675,10 +823,10 @@ void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 			*file << '\n';
 			*file << setCharacterData.angle;   // 見ている方向
 		}
-	}
-	else if (setData.fileNameAndType.typeName == "ファイル名ファイルタイプ")
-	{
-		*file << setData.fileNameAndType.typeName;
+		break;
+
+	case DataType::FILE_NAME:
+		*file << setData.fileNameAndType.typeNumber;
 		*file << "\n";
 		*file << setData.datas.fileNameDatas.size();
 		*file << "\n";
@@ -693,6 +841,7 @@ void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 			*/
 			*file << "シーン";// 仮
 		}
+		break;
 	}
 }
 
@@ -702,7 +851,7 @@ PLAYER_DATA DataManager::GetPlayerFileData(std::ifstream* file)
 	PLAYER_DATA setPlayerData;
 
 	*file >> setPlayerData.dataFlag;    // セーブされたデータがあるかどうか
-	*file >> setPlayerData.characterData.templateData.typeName;    // キャラクタータイプ
+	*file >> setPlayerData.characterData.templateData.typeNumber;    // キャラクタータイプ
 	*file >> setPlayerData.characterData.templateData.name;    // キャラクターの名前
 	*file >> setPlayerData.characterData.survivalFlag;    // キャラクターの生存フラグ
 	*file >> setPlayerData.characterData.status.level;  // レベル
@@ -727,7 +876,7 @@ PLAYER_DATA DataManager::GetPlayerFileData(std::ifstream* file)
 	for (int i = 0; i < setPlayerData.itemNumber; i++) {
 		ItemData setItemData;
 		*file >> setItemData.templateData.name;
-		*file >> setItemData.templateData.typeName;
+		*file >> setItemData.templateData.typeNumber;
 		*file >> setItemData.possessionCount;
 		*file >> setItemData.itemPhotoFileName;
 
@@ -743,7 +892,7 @@ void DataManager::SetPlayerFileData(PLAYER_DATA setData, std::ofstream* file)
 	*file << '\n';
 	*file << setData.dataFlag;
 	*file << '\n';
-	*file << setData.characterData.templateData.typeName;
+	*file << setData.characterData.templateData.typeNumber;
 	*file << '\n';
 	*file << setData.characterData.templateData.name;
 	*file << '\n';
@@ -782,7 +931,7 @@ void DataManager::SetPlayerFileData(PLAYER_DATA setData, std::ofstream* file)
 		*file << '\n';
 		*file << setData.itemData[i].templateData.name;
 		*file << '\n';
-		*file << setData.itemData[i].templateData.typeName;
+		*file << setData.itemData[i].templateData.typeNumber;
 		*file << '\n';
 		*file << setData.itemData[i].possessionCount;
 		*file << '\n';

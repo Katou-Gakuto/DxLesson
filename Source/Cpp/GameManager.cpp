@@ -24,9 +24,7 @@ GameManager::~GameManager()
 void GameManager::Initilize()
 {
     // データマネージャー初期化処理
-    mpDataManager = new DataManager();
-    mpDataManager->Initilize();
-    //mpDataManager->SetTestFileData("GameData/Test_Data.txt");
+    mpDataManager = new DataManager("GameData/FileNames_Data.txt");
 
     // グラフマネジャー初期化処理
     mpGraphManager = new GraphManager();
@@ -94,8 +92,16 @@ void GameManager::Update()
     // 他マネージャーの終了フラグが有効になっていれば終了フラグを有効にする
     UpdateEndSetProcess();
 }
-#include "../Header/Operation.h"
 
+// 削除する必要がある物を削除する
+void GameManager::DeleteAllIfNeeded()
+{
+    mpObjectManager->DeleteAllIfNeeded();
+
+    mpDataManager->DeleteItemIfNeeded();
+}
+
+//#include "../Header/Operation.h"
 void GameManager::Draw()
 {
 
