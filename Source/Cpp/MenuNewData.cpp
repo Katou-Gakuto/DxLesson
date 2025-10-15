@@ -65,23 +65,6 @@ MenuNewData::~MenuNewData()
 */
 void MenuNewData::MyInitilize()
 {
-    // 初期化されたデータを取得
-    {
-        std::vector<DATA_NAME> fileNames = mpDataManager->GetBaseData_FileName();
-        DATA_NAME setFileName;
-        bool flag = false;
-        for (int i = 0; i < fileNames.size(); i++) {
-            if (fileNames[i].fileTypeName == PLAYER_INIT_DATA_FILE_NAME) {
-                setFileName = fileNames[i];
-                flag = true;
-                break;
-            }
-        }
-        if (flag) {
-            msPlayerData = mpDataManager->GetFile_PlayerFileDatas(setFileName.fileName)[0];
-        }
-    }
-
     // 文字サイズ設定
     {
         mnNotAlphabetHandle = CreateFontToHandle(NULL, 12, 5);
@@ -203,8 +186,8 @@ void MenuNewData::MyUpdate()
             mnPlayerTypeNumber += 1;
             mbDrawDownKeyFlag = true;
             mbDrawUpKeyFlag = false;
-            if (mnPlayerTypeNumber >= mpDataManager->GetCharacterNameMaxNumber()) {
-                mnPlayerTypeNumber = (mpDataManager->GetCharacterNameMaxNumber() - 1);
+            if (mnPlayerTypeNumber >= mpDataManager->GetInitPlayerData().size()) {
+                mnPlayerTypeNumber = (mpDataManager->GetInitPlayerData().size() - 1);
             }
             SetSelectChangeSound();
         }
@@ -264,8 +247,8 @@ void MenuNewData::MyDraw()
         bool outDataNameFlag;
         outDataNameFlag = false;
         for (int i = 0; i < 3; i++) {
-            if (mpDataManager->GetPlayerData(i).dataFlag) {
-                if ((mpDataManager->GetPlayerData(i).characterData.templateData.name == mstrPlayerName) && (mnMenuSelect != i)) {
+            if (mpDataManager->GetPlayerData()[i].dataFlag) {
+                if ((mpDataManager->GetPlayerData()[i].characterData.templateData.name == mstrPlayerName) && (mnMenuSelect != i)) {
                     DrawStringToHandle((GetScreenSize().x / 5) * 1, (GetScreenSize().y / 5) * 0.6, "×", GetColor(255, 0, 0), mnAlphabetHandle);
                     outDataNameFlag = true;
                     break;
@@ -321,7 +304,7 @@ void MenuNewData::MyDraw()
         // 入力中タイプ描画
         DrawBox((GetScreenSize().x / 5) * 1, (GetScreenSize().y / 5) * 0.5,
             (GetScreenSize().x / 5) * 4, (GetScreenSize().y / 5) * 1, GetColor(255, 255, 255), TRUE);
-        DrawFormatStringToHandle((GetScreenSize().x / 5) * 1.2, (GetScreenSize().y / 5) * 0.6, GetColor(0, 0, 0), mnAlphabetHandle, "%s", mpDataManager->GetCharacterName_Number(mnPlayerTypeNumber).c_str());
+        DrawFormatStringToHandle((GetScreenSize().x / 5) * 1.2, (GetScreenSize().y / 5) * 0.6, GetColor(0, 0, 0), mnAlphabetHandle, "%s", mpDataManager->GetInitPlayerData()[mnPlayerTypeNumber].characterData.templateData.name.c_str());
         
         // 上下図形描画
         // 上
@@ -381,7 +364,7 @@ void MenuNewData::SetPlayerNameProcess()
             break;
         case 9: // 決定
             for (int i = 0; i < 3; i++) {
-                if ((mpDataManager->GetPlayerData(i).characterData.templateData.name == mstrPlayerName) && (mnMenuSelect != i)) {
+                if ((mpDataManager->GetPlayerData()[i].characterData.templateData.name == mstrPlayerName) && (mnMenuSelect != i)) {
                     SetBeepSound();
                     return;
                 }
@@ -427,26 +410,21 @@ void MenuNewData::SetOverride_CheckMenuProcess()
         break;
     }
 
-    // 設定した情報を入力
-    msPlayerData.characterData.templateData.name = mstrPlayerName;
-    msPlayerData.characterData.templateData.typeName = mpDataManager->GetCharacterName_Number(mnPlayerTypeNumber);
-    msPlayerData.playerFolderName = (msPlayerData.playerFolderName + playerNumber);
-    msPlayerData.dataFlag = true;
+    PLAYER_DATA playerData = mpDataManager->GetInitPlayerData()[mnPlayerTypeNumber];
 
-    // プレイヤーデータ変更
-    mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-        mpDataManager->GetPlayerData(mnMenuSelect).characterData.templateData.name,
-        msPlayerData);
+    // 設定した情報を入力
+    playerData.characterData.templateData.name = mstrPlayerName;
+    playerData.playerFolderName = (playerData.playerFolderName + playerNumber);
+    playerData.dataFlag = true;
 
     // プレイヤーファイルデータ削除
-    std::vector<DATA_NAME> deleteFile = mpDataManager->GetFile_fileNameDatas(msPlayerData.playerFolderName + "/FileNames_Data.txt");
-    for (int i = 0; i < deleteFile.size(); i++) {
-        mpDataManager->DeleteFile_FileNameData(msPlayerData.playerFolderName + "/FileNames_Data.txt", deleteFile[i].fileName, deleteFile[i].fileTypeName.c_str());
-        mpDataManager->Delete_OneFile(deleteFile[i].fileName.c_str(), deleteFile[i].fileTypeName.c_str());
-    }
+    mpDataManager->PlayDataDelete(mnMenuSelect);
+
+    // プレイヤーデータ変更
+    mpDataManager->SetPlayPlayerData(playerData);
 
     // データ初期化
-    mpDataManager->Initilize();
+    mpDataManager->Save();
     SetDrawPlayerHandle();
 
     SetDeleteFlag(true);

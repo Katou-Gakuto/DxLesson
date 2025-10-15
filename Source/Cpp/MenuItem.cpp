@@ -15,8 +15,8 @@
 * @fn コンストラクタ
 */
 MenuItem::MenuItem()
-: Menu_Base(Master::mpGameManager->GetDataManager()->GetItems().size(), XYGet((GetScreenSize().x / 10) * 0.6, (GetScreenSize().y / 10) * 0.9), XYGet((GetScreenSize().x / 10) * 9.4, (GetScreenSize().y / 10) * 9.1), GetColor(50, 50, 50), DX_BLENDMODE_NOBLEND, 255)
-, mpItems(Master::mpGameManager->GetDataManager()->GetItems())
+: Menu_Base(Master::mpGameManager->GetDataManager()->GetPlayPlayerData().item.size(), XYGet((GetScreenSize().x / 10) * 0.6, (GetScreenSize().y / 10) * 0.9), XYGet((GetScreenSize().x / 10) * 9.4, (GetScreenSize().y / 10) * 9.1), GetColor(50, 50, 50), DX_BLENDMODE_NOBLEND, 255)
+, mpItems(Master::mpGameManager->GetDataManager()->GetPlayPlayerData().item)
 {
     mnXMax = ((GetScreenSize().x / 10) * 9.3) - ((GetScreenSize().x / 10) * 0.7);
     mnYMax = ((GetScreenSize().y / 10) * 9) - (GetScreenSize().y / 10);
@@ -169,7 +169,7 @@ void MenuItem::SelectDecision()
 
         if (mpItems[mnMenuSelect]->GetItemNumber() <= 0) {
             mpItems.clear();
-            mpItems = mpDataManager->GetItems();
+            mpItems = mpDataManager->GetPlayPlayerData().item;
             mnMaxMenuSelect -= 1;
             if (mnMenuSelect >= mnMaxMenuSelect) {
                 if (mnMaxMenuSelect == 0) {

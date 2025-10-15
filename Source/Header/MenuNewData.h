@@ -23,8 +23,6 @@ private:
 	int mnAlphabetHandle;	// アルファベット表示用ハンドル
 	int mnNotAlphabetHandle;	// アルファベット以外の表示用ハンドル
 
-	PLAYER_DATA msPlayerData;	// 新しく作るプレイヤーのデータ
-
 	int mnPlayerTypeModelHandle[1];	// プレイヤーモデル画像ハンドル
 	float mfPlayerTypeModelDrawPos[4][1];	// プレイヤー描画時画像描画用
 

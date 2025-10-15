@@ -174,24 +174,28 @@ void MenuCheckDedicated_GoScene(Object_Base *object)
 
     Master::mpGameManager->GetSceneManager()->SetNextScene(mapCharacter->GetGoScene());
 
+    DataManager* dataManager = Master::mpGameManager->GetDataManager();
 
-    PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber());
+    PLAYER_DATA playerData = dataManager->GetPlayPlayerData();
     playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
     playerData.characterData.angle = 0.0f;
     playerData.characterData.mapName = mapCharacter->GetGoSceneName();
 
-    Master::mpGameManager->GetDataManager()->Set_MyPlayerData(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber(), playerData);
-
-    DataManager* dataManager = Master::mpGameManager->GetDataManager();
-    SceneManager* sceneManager = Master::mpGameManager->GetSceneManager();
-
-    // プレイヤーデータ変更
-    dataManager->ChangeFile_PlayerFileData(dataManager->GetFileName_FileType(PLAYER_FILE_NAME, dataManager->GetBaseData_FileName()),
-        dataManager->GetPlayerData(sceneManager->GetPlayerDataNumber()).characterData.templateData.name,
-        dataManager->GetPlayerData(sceneManager->GetPlayerDataNumber()));
+    dataManager->SetPlayPlayerData(playerData);
 
     if (mapCharacter->GetDeleteDataFlag()) {
-        dataManager->DeleteFile_CharacterFileData(mapCharacter->GetCharacterDataFileName(), mapCharacter->GetCharacterName());
+        OneData characterdata = dataManager->GetOneData(mapCharacter->GetCharacterDataFileName(), (int)DataType::CHARACTER);
+
+        for (int i = 0; i < characterdata.datas.characterDatas.size(); i++)
+        {
+            if (characterdata.datas.characterDatas[i].templateData.name == mapCharacter->GetCharacterName())
+            {
+                characterdata.datas.characterDatas.erase(characterdata.datas.characterDatas.begin() + i);
+                break;
+            }
+        }
+
+        dataManager->ChangeOneData(characterdata, characterdata.fileNameAndType.name, (int)DataType::CHARACTER);
     }
 }
 

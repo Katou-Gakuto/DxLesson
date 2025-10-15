@@ -62,6 +62,7 @@ typedef struct ItemData
     int possessionCount;    // 所持数
 
     std::string itemPhotoFileName;  // アイテム画像のファイルネーム
+
 }ITEM_DATA;
 
 typedef struct Player_Data

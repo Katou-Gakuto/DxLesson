@@ -651,22 +651,6 @@ LEVEL_DATA DataManager::GetLevelData(std::vector<OneData> data, int characterTyp
 	nullData.maxLevelNumber = -1;
 	return nullData;
 }
-/*
-// 渡されたデータから指定のキャラクターデータを取得する
-std::vector<CHARACTER_DATA> DataManager::GetCharacterData(std::vector<OneData> data, std::string fileName)
-{
-	for (OneData oneData : data)
-	{
-		if (oneData.fileNameAndType.name == fileName)
-		{
-			return oneData.datas.characterDatas;
-		}
-	}
-
-	std::vector<CHARACTER_DATA> nullData;
-	nullData.clear();
-	return nullData;
-}*/
 
 // ファイルデータ読み込み用(OneData)
 OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)

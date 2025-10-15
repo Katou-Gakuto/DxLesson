@@ -62,6 +62,9 @@ public:
 	// プレイ中に設定されたデータを削除する
 	void PlayDataDelete(int playerNumber);
 
+	// 初期化用プレイヤーデータ取得
+	std::vector<PLAYER_DATA> GetInitPlayerData() { return mstInitPlayerDatas; }
+
 	// 一種類分データを取得
 	OneData GetOneData(std::string fileName, int fileType, bool baseFlag = false);
 	// 指定のシーンに必要な全データを取得
@@ -84,9 +87,6 @@ public:
 
 	// 渡されたデータから指定のキャラクタータイプのレベルデータを取得する
 	static LEVEL_DATA GetLevelData(std::vector<OneData> data, int characterType);
-
-	// 渡されたデータから指定のキャラクターデータを取得する
-	//static std::vector<CHARACTER_DATA> GetCharacterData(std::vector<OneData> data, std::string fileName);
 
 private:
 	/*ファイルデータ読み込み用(OneData)*/
