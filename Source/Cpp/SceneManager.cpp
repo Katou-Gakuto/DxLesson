@@ -182,8 +182,121 @@ void SceneManager::SetCharacter_StageManager(StageManagerObject *stageManager, S
 {
     GENERATE_INFORATION generateInforation;
 
-    int count = 0;
-    int number = -1;
+    std::vector<OneData> characterDatas = mpDataManager->GetSceneData(nowScene);
+
+    for (OneData& oneCharacterData : characterDatas)
+    {
+        if (oneCharacterData.fileNameAndType.typeNumber == (int)DataType::CHARACTER)
+        {
+            for (CHARACTER_DATA& oneCharacter : oneCharacterData.datas.characterDatas)
+            {
+                generateInforation.survivalFlag = oneCharacter.survivalFlag;
+                generateInforation.characterType = (CHARACTER_TYPE)oneCharacter.templateData.typeNumber;
+                generateInforation.GeneratePosition = oneCharacter.position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*/;
+                generateInforation.angle = oneCharacter.angle;
+                generateInforation.status = oneCharacter.status;
+                generateInforation.name = oneCharacter.templateData.name;
+                generateInforation.scene = oneCharacter.mapType;
+                generateInforation.dataFileName = oneCharacterData.fileNameAndType.name;
+
+                // ステージマネージャーにエネミー情報を入力
+                stageManager->AddGenerateInforation(generateInforation);
+            }
+        }
+    }
+    /*
+    int baseCount = 0;
+
+    std::vector<DATA_NAME> setPlayData;
+
+    // ベースファイルに生成する種類のファイル数を取得
+    for (DATA_NAME& oneBaseFileName : baseFileNameData)
+    {
+        if ((oneBaseFileName.sceneType == nowScene) && (oneBaseFileName.fileTypeName == NOT_PLAYER_CHARACTER_FILE_NAME))
+        {
+            ++baseCount;
+        }
+    }
+
+    setPlayData.clear();
+    setPlayData.reserve(baseCount);
+
+    // プレイヤーファイルに生成する種類のファイル数を取得
+    for (DATA_NAME& onePlayerFileName : playerFileNameData)
+    {
+        if ((onePlayerFileName.sceneType == nowScene) && (onePlayerFileName.fileTypeName == NOT_PLAYER_CHARACTER_FILE_NAME))
+        {
+            setPlayData.push_back(onePlayerFileName);
+        }
+    }
+
+    // エネミー情報を設定する
+    if (baseCount > 0)
+    {
+        std::vector<CHARACTER_DATA> characterData;
+        if (baseCount > setPlayData.size())
+        {
+            for (DATA_NAME& oneBaseFileName : baseFileNameData)
+            {
+                if ((oneBaseFileName.sceneType == nowScene) && (oneBaseFileName.fileTypeName == NOT_PLAYER_CHARACTER_FILE_NAME))
+                {
+                    bool setDataFlag = false;
+
+                    std::string playerFilePath;
+                    playerFilePath = mpDataManager->GetPlayPlayerData().playerFolderName;
+
+                    for (DATA_NAME& oneData : setPlayData)
+                    {
+                        if ((playerFilePath + oneBaseFileName.fileName.substr(9)) == oneData.fileName)
+                        {
+                            setDataFlag = true;
+                        }
+                    }
+                    
+                    if (!setDataFlag)
+                    {
+                    }
+
+                    --baseCount;
+                    if (baseCount == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // プレイヤーデータにある生成する種類のキャラクター情報を設定する
+            for (DATA_NAME& onePlayerFileName : playerFileNameData)
+            {
+                if ((onePlayerFileName.sceneType == nowScene) && (onePlayerFileName.fileTypeName == NOT_PLAYER_CHARACTER_FILE_NAME))
+                {
+                    for (OneData& onePlayFileData : Master::mpGameManager->GetDataManager()->GetAllData())
+                    {
+                        if (onePlayFileData.fileNameAndType.name == onePlayerFileName.fileName)
+                        {
+                            characterData = onePlayFileData.datas.characterDatas;
+
+                            for (int j = 0; j < characterData.size(); j++) {
+                                generateInforation.survivalFlag = characterData[j].survivalFlag;
+                                generateInforation.characterType = (CHARACTER_TYPE)characterData[j].templateData.typeNumber;
+                                generateInforation.GeneratePosition = characterData[j].position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*//*;
+                                generateInforation.angle = characterData[j].angle;
+                                generateInforation.status = characterData[j].status;
+                                generateInforation.name = characterData[j].templateData.name;
+                                generateInforation.scene = characterData[j].mapType;
+                                generateInforation.dataFileName = onePlayerFileName.fileName;
+
+                                // ステージマネージャーにエネミー情報を入力
+                                stageManager->AddGenerateInforation(generateInforation);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     // 生成するマップデータを取得
     for (int i = 0; i < msMapDatas.size(); i++) {
@@ -225,7 +338,7 @@ void SceneManager::SetCharacter_StageManager(StageManagerObject *stageManager, S
                     for (int j = 0; j < characterData.size(); j++) {
                         generateInforation.survivalFlag = characterData[j].survivalFlag;
                         generateInforation.characterType = GetCharacterType(characterData[j].templateData.typeName);
-                        generateInforation.GeneratePosition = characterData[j].position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*/;
+                        generateInforation.GeneratePosition = characterData[j].position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*//*;
                         generateInforation.angle = characterData[j].angle;
                         generateInforation.status = characterData[j].status;
                         generateInforation.name = characterData[j].templateData.name;
@@ -255,7 +368,7 @@ void SceneManager::SetCharacter_StageManager(StageManagerObject *stageManager, S
                         {
                             generateInforation.survivalFlag = characterData[j].survivalFlag;
                             generateInforation.characterType = GetCharacterType(characterData[j].templateData.typeName);
-                            generateInforation.GeneratePosition = characterData[j].position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*/;
+                            generateInforation.GeneratePosition = characterData[j].position/*VGet(-900.0f + (i * 600.0f), 0.0f, 600.0f)*//*;
                             generateInforation.angle = characterData[j].angle;
                             generateInforation.status = characterData[j].status;
                             generateInforation.name = characterData[j].templateData.name;
@@ -290,7 +403,7 @@ void SceneManager::SetCharacter_StageManager(StageManagerObject *stageManager, S
 
             Master::mpGameManager->GetDataManager()->Init_PlayerFileName_And_Item(Master::mpGameManager->GetSceneManager()->GetPlayerDataNumber());
         }
-    }
+    }*/
 }
 
 /*

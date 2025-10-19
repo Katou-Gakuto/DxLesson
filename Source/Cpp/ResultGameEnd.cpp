@@ -77,7 +77,7 @@ void ResultGameEnd::MyInitilize()
         mnMaxMenuSelect = static_cast<int>(GAME_CLEAR::MAX);
 
         // プレイヤーデータ取得
-        playerData = mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber());
+        playerData = mpDataManager->GetPlayPlayerData();
 
         // プレイヤーデータ入力
         {
@@ -86,18 +86,18 @@ void ResultGameEnd::MyInitilize()
             }
             playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
             playerData.characterData.angle = 0.0f;
-            playerData.characterData.mapName = "DEFAULT_MAP_ONE";
+            playerData.characterData.templateData.typeNumber = (int)SCENE::DEFAULT_MAP_ONE;
         }
-        mpDataManager->Set_MyPlayerData(mpSceneManager->GetPlayerDataNumber(), playerData);
+        mpDataManager->SetPlayPlayerData(playerData);
 
 
-        // プレイヤーデータ変更
-        mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-            playerData.characterData.templateData.name,
-            playerData);
+        //// プレイヤーデータ変更
+        //mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
+        //    playerData.characterData.templateData.name,
+        ////    playerData);
 
-        // アイテム設定
-        mpDataManager->Init_PlayerFileName_And_Item(mpSceneManager->GetPlayerDataNumber());
+        //// アイテム設定
+        //mpDataManager->Init_PlayerFileName_And_Item(mpSceneManager->GetPlayerDataNumber());
         break;
 
     case SCENE::GAME_NOTHING:
@@ -278,7 +278,7 @@ PLAYER_DATA ResultGameEnd::GetPlayer_ItemPlus(PLAYER_DATA playerData)
 {
     ITEM_DATA item;
     item.possessionCount = 1;
-    item.templateData.typeName = "RecoveryMedicine(Large)";
+    item.templateData.typeNumber = (int)ItemType::RECOVERY_MEDICIN_LARGE;// "RecoveryMedicine(Large)";
     item.itemPhotoFileName = "Resource/2D/RecoveryMedicine(Large).png";
     item.templateData.name = "LargeMedicine";
 
@@ -347,7 +347,7 @@ void ResultGameEnd::DrawClear()
     ///////////DrawStringToHandle((GetScreenSize().x / 10) * 8, (GetScreenSize().y / 10) * 9.3, "\"A\"STAGE", GetColor(255, 0, 0), mnSelectHandle);
     //DrawStringToHandle((mnWidth / 1.3), (mnHeight / 1.1), "IN DETAIL", mnMenuSelect == 1 ? GetColor(255, 0, 0) : GetColor(255, 255, 255), mnSelectHandle);
 
-    PLAYER_DATA playerData = mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber());
+    PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
     PLAYER_DATA oldPlayerData = mpSceneManager->GetOldPlayerData();
     bool statusUpFlag[6];
 

@@ -52,23 +52,23 @@ void ResultBattle::MyInitilize()
 
     // アイテム入手処理
     {
-        PLAYER_DATA playerData = mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber());
+        PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
         int setRandNumber = GetRand(3);
 
         for (int i = 0; i < setRandNumber; i++) {
             playerData = GetPlayer_PlusNewItem(playerData);
         }
 
-        mpDataManager->Set_MyPlayerData(mpSceneManager->GetPlayerDataNumber(), playerData);
+        mpDataManager->SetPlayPlayerData(playerData);
     }
 
-    // プレイヤーデータ変更
-    mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-        mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.name,
-        mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()));
+    //// プレイヤーデータ変更
+    //mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
+    //    mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.name,
+    //    mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()));
 
-    // アイテム設定
-    mpDataManager->Init_PlayerFileName_And_Item(mpSceneManager->GetPlayerDataNumber());
+    //// アイテム設定
+    //mpDataManager->Init_PlayerFileName_And_Item(mpSceneManager->GetPlayerDataNumber());
 }
 
 /*
@@ -131,7 +131,7 @@ void ResultBattle::MyDraw()
     DrawStringToHandle((GetScreenSize().x / 10) * 8, (GetScreenSize().y / 10) * 9.3, "\"A\"STAGE", GetColor(255, 0, 0), mnSelectHandle);
     //DrawStringToHandle((mnWidth / 1.3), (mnHeight / 1.1), "IN DETAIL", mnMenuSelect == 1 ? GetColor(255, 0, 0) : GetColor(255, 255, 255), mnSelectHandle);
 
-    PLAYER_DATA playerData = mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber());
+    PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
     PLAYER_DATA oldPlayerData = mpSceneManager->GetOldPlayerData();
     bool statusUpFlag[6];
 
@@ -224,7 +224,7 @@ void ResultBattle::SelectDecision()
  
 
     // マップにシーン移動
-    mpSceneManager->SetNextScene(mpDataManager->GetSceneType(mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.mapName));
+    mpSceneManager->SetNextScene(mpDataManager->GetPlayPlayerData().characterData.mapType);
 
     //    break;
 
@@ -253,19 +253,19 @@ PLAYER_DATA ResultBattle::GetPlayer_PlusNewItem(PLAYER_DATA playerData)
     case 4:
     case 5:
     case 6:
-        item.templateData.typeName = "RecoveryMedicine(Small)";
+        item.templateData.typeNumber = (int)ItemType::RECOVERY_MEDICIN_SMALL;//"RecoveryMedicine(Small)";
         item.itemPhotoFileName = "Resource/2D/RecoveryMedicine(Small).png";
         item.templateData.name = "SmallMedicine";
         break;
     case 7:
     case 8:
     case 9:
-        item.templateData.typeName = "RecoveryMedicine(Medium)";
+        item.templateData.typeNumber = (int)ItemType::RECOVERY_MEDICIN_MEDIUM;//""RecoveryMedicine(Medium)";
         item.itemPhotoFileName = "Resource/2D/RecoveryMedicine(Medium).png";
         item.templateData.name = "MediumMedicine";
         break;
     case 10:
-        item.templateData.typeName = "RecoveryMedicine(Large)";
+        item.templateData.typeNumber = (int)ItemType::RECOVERY_MEDICIN_LARGE;//""RecoveryMedicine(Large)";
         item.itemPhotoFileName = "Resource/2D/RecoveryMedicine(Large).png";
         item.templateData.name = "LargeMedicine";
         break;

@@ -35,7 +35,7 @@ void PlayerMap::MyInitilize()
     DataManager *dataManager = Master::mpGameManager->GetDataManager();
     SceneManager *sceneManager = Master::mpGameManager->GetSceneManager();
 
-    switch (dataManager->GetCharacterNameEnumClass( dataManager->GetPlayerData( sceneManager->GetPlayerDataNumber()).characterData.templateData.typeName))
+    switch ((CHARACTER_TYPE)dataManager->GetPlayPlayerData().characterData.templateData.typeNumber)
     {
     case CHARACTER_TYPE::ROBOT_PLAYER:
         mpMotion = new MotionRobotSphere(this, 3000);

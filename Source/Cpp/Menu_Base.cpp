@@ -352,13 +352,13 @@ void Menu_Base::DrawPlayerDatas()
         else {
             DrawBoxAA(msLowerRight.x / 6, (msLowerRight.y / 24) * (1 + (i * 8)), (msLowerRight.x / 6) * 5, (msLowerRight.y / 24) * (7 + (i * 8)), GetColor(0, 0, 100), TRUE);
         }
-        if (mpDataManager->GetPlayerData(i).dataFlag) {
+        if (mpDataManager->GetPlayerData()[i].dataFlag) {
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (1.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "SAVE DATA %d", i + 1);
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (2.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "PLAYER NAME : %s", mpDataManager->GetPlayerData(i).characterData.templateData.name.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", mpDataManager->GetPlayerData(i).characterData.templateData.typeName.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", mpDataManager->GetPlayerData(i).characterData.mapName.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (5.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "LEVEL:%-4d EXP:%-5d HP:%d", mpDataManager->GetPlayerData(i).characterData.status.level, mpDataManager->GetPlayerData(i).characterData.status.exp, mpDataManager->GetPlayerData(i).characterData.status.hp);
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (6.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "ATTACK:%-4d DEFENSE:%-4d SPEED:%d", mpDataManager->GetPlayerData(i).characterData.status.attackPower, mpDataManager->GetPlayerData(i).characterData.status.defense, mpDataManager->GetPlayerData(i).characterData.status.speed);
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (2.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "PLAYER NAME : %s", mpDataManager->GetPlayerData()[i].characterData.templateData.name.c_str());
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", mpDataManager->GetPlayerData()[i].characterData.templateData.typeName.c_str());
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", mpDataManager->GetPlayerData()[i].characterData.mapName.c_str());
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (5.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "LEVEL:%-4d EXP:%-5d HP:%d", mpDataManager->GetPlayerData()[i].characterData.status.level, mpDataManager->GetPlayerData()[i].characterData.status.exp, mpDataManager->GetPlayerData()[i].characterData.status.hp);
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (6.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "ATTACK:%-4d DEFENSE:%-4d SPEED:%d", mpDataManager->GetPlayerData()[i].characterData.status.attackPower, mpDataManager->GetPlayerData()[i].characterData.status.defense, mpDataManager->GetPlayerData()[i].characterData.status.speed);
 
             if (mnDrawPlayerPictureHandle[i] != -1) {
                 DrawExtendGraph((msLowerRight.x / 6) * 4.1, (msLowerRight.y / 24) * (1 + (i * 8)), (msLowerRight.x / 6) * 5, (msLowerRight.y / 24) * (5.8 + (i * 8)), mnDrawPlayerPictureHandle[i], FALSE);
@@ -382,7 +382,7 @@ void Menu_Base::SetDrawPlayerHandle()
 {
     if (mbDrawPlayerDataFlag) {
         for (int i = 0; i < PLAYER_DATA_NUMBER; i++) {
-            std::string typeName = mpDataManager->GetPlayerData(i).characterData.templateData.typeName;
+            std::string typeName = mpDataManager->GetPlayerData()[i].characterData.templateData.typeName;
             if (typeName == "RobotPlayer") {
                 mnDrawPlayerPictureHandle[i] = Master::mpGameManager->GerGraphManager()->GetGraphHandle(GRAPH_TYPE::ROBOT_CHARACTER);
             }

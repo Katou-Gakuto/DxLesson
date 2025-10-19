@@ -31,6 +31,7 @@ private:
 	// 取得済みデータ場所保存用
 	std::map<SCENE, std::list<int>> mmGetFilePosNumbers;
 
+	// 削除予定アイテム名
 	std::list<std::string> msDeleteItemName;
 
 	// 失敗フラグ
