@@ -708,7 +708,7 @@ OneData DataManager::GetOneFileData(DATA_STRUCT fileName, std::ifstream* file)
 			*file >> setCharacterData.status.defense;  // 防御力
 			*file >> setCharacterData.status.speed;    // 速度
 			*file >> setCharacterData.status.size; // 大きさ
-			*file >> setCharacterData.mapName; // マップ名
+			*file >> (int&)setCharacterData.mapType; // マップ名
 			*file >> setCharacterData.position.x;  // 居る場所X軸
 			*file >> setCharacterData.position.y;  // 居る場所Y軸
 			*file >> setCharacterData.position.z;  // 居る場所Z軸
@@ -801,7 +801,7 @@ void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 			*file << '\n';
 			*file << setCharacterData.status.size; // 大きさ
 			*file << '\n';
-			*file << setCharacterData.mapName; // マップ名
+			*file << (int)setCharacterData.mapType; // マップ名
 			*file << '\n';
 			*file << setCharacterData.position.x;  // 居る場所X軸
 			*file << '\n';
@@ -850,7 +850,7 @@ PLAYER_DATA DataManager::GetPlayerFileData(std::ifstream* file)
 	*file >> setPlayerData.characterData.status.defense;  // 防御力
 	*file >> setPlayerData.characterData.status.speed;    // 速度
 	*file >> setPlayerData.characterData.status.size; // 大きさ
-	*file >> setPlayerData.characterData.mapName; // マップ名
+	*file >> (int&)setPlayerData.characterData.mapType; // マップ名
 	*file >> setPlayerData.characterData.position.x;  // 居る場所X軸
 	*file >> setPlayerData.characterData.position.y;  // 居る場所Y軸
 	*file >> setPlayerData.characterData.position.z;  // 居る場所Z軸
@@ -902,7 +902,7 @@ void DataManager::SetPlayerFileData(PLAYER_DATA setData, std::ofstream* file)
 	*file << '\n';
 	*file << setData.characterData.status.size;
 	*file << '\n';
-	*file << setData.characterData.mapName;
+	*file << (int)setData.characterData.mapType;
 	*file << '\n';
 	*file << setData.characterData.position.x;
 	*file << '\n';

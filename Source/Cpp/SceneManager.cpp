@@ -39,7 +39,7 @@ SceneManager::SceneManager()
 {
     mpDataManager = Master::mpGameManager->GetDataManager();
 
-    msMapDatas = mpDataManager->GetData_MapFile(mpDataManager->GetFileName_FileType(MAP_FILE_NAME, mpDataManager->GetBaseData_FileName()));
+    //msMapDatas = mpDataManager->GetData_MapFile(mpDataManager->GetFileName_FileType(MAP_FILE_NAME, mpDataManager->GetBaseData_FileName()));
     
     mfMapMaxSize = 10000.0f;//3000.0f;//
 
@@ -180,8 +180,6 @@ void SceneManager::CheckScene()
 */
 void SceneManager::SetCharacter_StageManager(StageManagerObject *stageManager, SCENE nowScene, std::vector<DATA_NAME> playerFileNameData, std::vector<DATA_NAME> baseFileNameData)
 {
-    MAP_DATA mapData;
-
     GENERATE_INFORATION generateInforation;
 
     int count = 0;
@@ -356,9 +354,9 @@ void SceneManager::NewSceneProcess()
 
     // 生成情報
     GENERATE_INFORATION generateInforation;
-    std::vector<DATA_NAME> playerFileNameData = mpDataManager->GetFile_PlayerFileNameDatas();//->GetFileNames_SceneType(meNowScene); 
-    std::vector<DATA_NAME> baseFileNameData = mpDataManager->GetBaseData_FileName();
-    MAP_DATA mapData;
+    std::vector<DATA_NAME> playerFileNameData = mpDataManager->GetAllData()[0].datas.fileNameDatas;//->GetFileNames_SceneType(meNowScene); 
+    std::vector<DATA_NAME> baseFileNameData = mpDataManager->GetAllData(true)[0].datas.fileNameDatas;
+    
     PLAYER_DATA playerData;
     std::vector<CHARACTER_DATA> characterData;
     Object_Base_Character *mapEnemy;
@@ -400,16 +398,21 @@ void SceneManager::NewSceneProcess()
         // プレイヤー
         {
             // プレイヤー生成情報入力
-            playerData = mpDataManager->GetPlayerData(mnPlayerDataNumber);
-            generateInforation.survivalFlag = playerData.characterData.survivalFlag;
-            generateInforation.characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
-            generateInforation.GeneratePosition = playerData.characterData.position;
-            generateInforation.angle = playerData.characterData.angle;
-            generateInforation.status = playerData.characterData.status;
-            generateInforation.name = playerData.characterData.templateData.name;
-            generateInforation.scene = mpDataManager->GetSceneType(playerData.characterData.mapName);
-            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());
-
+            /*playerData = */SetPlayer(&generateInforation, mpDataManager->GetPlayPlayerData(), CHARACTER_TYPE::MAP_PLAYER);
+            //generateInforation.survivalFlag = playerData.characterData.survivalFlag;
+            //generateInforation.characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
+            //generateInforation.GeneratePosition = playerData.characterData.position;
+            //generateInforation.angle = playerData.characterData.angle;
+            //generateInforation.status = playerData.characterData.status;
+            //generateInforation.name = playerData.characterData.templateData.name;
+            //generateInforation.scene = playerData.characterData.mapType;
+            //for (DATA_NAME fileNameData : mpDataManager->GetAllData(true)[0].datas.fileNameDatas)
+            //{
+            //    if (fileNameData.fileTypeName == PLAYER_FILE_NAME)
+            //    {
+            //        generateInforation.dataFileName = fileNameData.fileName;
+            //    }
+            //}
 
             // ステージマネージャーにプレイヤー情報を入力
             stageManager->AddGenerateInforation(generateInforation);
@@ -468,15 +471,15 @@ void SceneManager::NewSceneProcess()
         // プレイヤー
         {
             // プレイヤー生成情報入力
-            playerData = mpDataManager->GetPlayerData(mnPlayerDataNumber);
-            generateInforation.survivalFlag = playerData.characterData.survivalFlag;
-            generateInforation.characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
-            generateInforation.GeneratePosition = playerData.characterData.position;
-            generateInforation.angle = playerData.characterData.angle;
-            generateInforation.status = playerData.characterData.status;
-            generateInforation.name = playerData.characterData.templateData.name;
-            generateInforation.scene = mpDataManager->GetSceneType(playerData.characterData.mapName);
-            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());
+            /*playerData = */SetPlayer(&generateInforation, mpDataManager->GetPlayPlayerData(), CHARACTER_TYPE::MAP_PLAYER);
+            //generateInforation.survivalFlag = playerData.characterData.survivalFlag;
+            //generateInforation.characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
+            //generateInforation.GeneratePosition = playerData.characterData.position;
+            //generateInforation.angle = playerData.characterData.angle;
+            //generateInforation.status = playerData.characterData.status;
+            //generateInforation.name = playerData.characterData.templateData.name;
+            //generateInforation.scene = mpDataManager->GetSceneType(playerData.characterData.mapName);
+            //generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());
             
 
             // ステージマネージャーにプレイヤー情報を入力
@@ -594,14 +597,14 @@ void SceneManager::NewSceneProcess()
         // プレイヤー
         {
             // プレイヤー生成情報入力
-            playerData = mpDataManager->GetPlayerData(mnPlayerDataNumber);
-            generateInforation.survivalFlag = playerData.characterData.survivalFlag;
+            playerData = SetPlayer(&generateInforation, mpDataManager->GetPlayPlayerData(), (CHARACTER_TYPE)mpDataManager->GetPlayPlayerData().characterData.templateData.typeNumber);
+            /*generateInforation.survivalFlag = playerData.characterData.survivalFlag;
             generateInforation.characterType = GetCharacterType(playerData.characterData.templateData.typeName);
             generateInforation.GeneratePosition = VGet(0.0f, 0.0f, 0.0f);
             generateInforation.angle = 0.0f;
             generateInforation.status = playerData.characterData.status;
             generateInforation.name = playerData.characterData.templateData.name;
-            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());
+            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());*/
 
             // ステージマネージャーにプレイヤー情報を入力
             stageManager->AddGenerateInforation(generateInforation);
@@ -656,14 +659,14 @@ void SceneManager::NewSceneProcess()
         // プレイヤー
         {
             // プレイヤー生成情報入力
-            playerData = mpDataManager->GetPlayerData(mnPlayerDataNumber);
-            generateInforation.survivalFlag = playerData.characterData.survivalFlag;
+            playerData = SetPlayer(&generateInforation, mpDataManager->GetPlayPlayerData(), (CHARACTER_TYPE)mpDataManager->GetPlayPlayerData().characterData.templateData.typeNumber);
+            /*generateInforation.survivalFlag = playerData.characterData.survivalFlag;
             generateInforation.characterType = GetCharacterType(playerData.characterData.templateData.typeName);;
             generateInforation.GeneratePosition = VGet(0.0f, 0.0f, 0.0f);
             generateInforation.angle = 0.0f;
             generateInforation.status = playerData.characterData.status;
             generateInforation.name = playerData.characterData.templateData.name;
-            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());
+            generateInforation.dataFileName = mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName());*/
 
             // ステージマネージャーにプレイヤー情報を入力
             stageManager->AddGenerateInforation(generateInforation);
@@ -797,4 +800,28 @@ void SceneManager::SetTowerObject(VECTOR plusPosition, int modelNumber, const ch
 {
     FixedTower *fixedTower = new FixedTower(plusPosition, modelNumber, filename, xTowerNumber, zTowerNumber);
     fixedTower->Initilize();
+}
+
+/*
+* @fn SetPlayer
+* @drief プレイヤー情報設定
+*/
+PLAYER_DATA SceneManager::SetPlayer(GENERATE_INFORATION* generateInforation, PLAYER_DATA playerData, CHARACTER_TYPE characterType)
+{
+    generateInforation->survivalFlag = playerData.characterData.survivalFlag;
+    generateInforation->characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
+    generateInforation->GeneratePosition = playerData.characterData.position;
+    generateInforation->angle = playerData.characterData.angle;
+    generateInforation->status = playerData.characterData.status;
+    generateInforation->name = playerData.characterData.templateData.name;
+    generateInforation->scene = playerData.characterData.mapType;
+    for (DATA_NAME fileNameData : mpDataManager->GetAllData(true)[0].datas.fileNameDatas)
+    {
+        if (fileNameData.fileTypeName == PLAYER_FILE_NAME)
+        {
+            generateInforation->dataFileName = fileNameData.fileName;
+        }
+    }
+
+    return playerData;
 }

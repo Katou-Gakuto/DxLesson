@@ -57,5 +57,7 @@ private:
 
     PLAYER_DATA msOldPlayerData;    // 　保存用プレイヤーデータ
 
-    void SetTowerObject(VECTOR plusPosition, int modelNumber, const char *filename, int xTowerNumber = 1, int zTowerNumber = 1);    //  タワー作成用関数
+    void SetTowerObject(VECTOR plusPosition, int modelNumber, const char *filename, int xTowerNumber = 1, int zTowerNumber = 1); //  タワー作成用関数
+
+    PLAYER_DATA SetPlayer(GENERATE_INFORATION* generateInforation, PLAYER_DATA playerData, CHARACTER_TYPE characterType);  // プレイヤー情報設定
 };

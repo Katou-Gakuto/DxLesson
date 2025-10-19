@@ -425,6 +425,7 @@ void MenuNewData::SetOverride_CheckMenuProcess()
 
     // ƒf[ƒ^‰Šú‰»
     mpDataManager->Save();
+
     SetDrawPlayerHandle();
 
     SetDeleteFlag(true);

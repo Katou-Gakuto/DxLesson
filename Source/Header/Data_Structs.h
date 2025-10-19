@@ -49,7 +49,7 @@ typedef struct Character_Data
 
     STATUS status;  // ステータス
 
-    std::string mapName;    // 居るマップの名前
+    SCENE mapType;   // マップ
     VECTOR position;    // ポジション
     float angle;    // 見てる方向
 
