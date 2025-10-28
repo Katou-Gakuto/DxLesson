@@ -147,8 +147,8 @@ void MenuPlay::MyDraw()
         DrawBox((GetScreenSize().x / 10) * 0.8, (GetScreenSize().y / 10) * 1.1, (GetScreenSize().x / 10) * 9.2, (GetScreenSize().y / 10) * 8.9, GetColor(200, 200, 200), TRUE);
         DrawStringToHandle((GetScreenSize().x / 10) * 6.5, (GetScreenSize().y / 10) * 8.1, "\"B\"CLOSE", GetColor(0, 0, 0), mnMenuHandle);
 
-        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.2,  GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER NAME : %s", mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.name.c_str());
-        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.97, GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER TYPE : %s", mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.typeName.c_str());
+        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.2,  GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER NAME : %s", mpDataManager->GetPlayPlayerData().characterData.templateData.name.c_str());
+        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.97, GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayPlayerData().characterData.templateData.typeNumber));
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 2.74, GetColor(0, 0, 0), mnPlayerDataHandle, "LEVEL       : %d", mpPlayer->GetStatus().level);
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 3.51, GetColor(0, 0, 0), mnPlayerDataHandle, "EXP         : %d", mpPlayer->GetStatus().exp);
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 4.28, GetColor(0, 0, 0), mnPlayerDataHandle, "ATTACK      : %d", mpPlayer->GetStatus().attackPower);
@@ -212,7 +212,7 @@ void MenuPlay::SetOverride_CheckMenuProcess()
         Object_Base_Character *player = Master::mpGameManager->GetObjectManager()->FindByTag_CharacterObject(PLAYER_TAG);
 
         // プレイヤー情報入力
-        PLAYER_DATA playerData = mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber());
+        PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
 
 
         playerData.characterData.status = player->GetStatus();
@@ -222,12 +222,14 @@ void MenuPlay::SetOverride_CheckMenuProcess()
             playerData.characterData.angle = player->GetObjectAngle();
         }
 
-        // プレイヤーデータ変更
-        mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-            mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.name,
-            playerData);
+        mpDataManager->Save();
 
-        // ゲーム内に反映
-        mpDataManager->Initilize();
+        //// プレイヤーデータ変更
+        //mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
+        //    mpDataManager->GetPlayerData(mpSceneManager->GetPlayerDataNumber()).characterData.templateData.name,
+        //    playerData);
+
+        //// ゲーム内に反映
+        //mpDataManager->Initilize();
     }
 }

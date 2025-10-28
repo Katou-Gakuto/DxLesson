@@ -134,48 +134,5 @@ void MenuPlayerDataReSet::SelectDecision()
 */
 void MenuPlayerDataReSet::SetOverride_CheckMenuProcess()
 {
-    std::vector<DATA_NAME> fileNames = mpDataManager->GetBaseData_FileName();
-    DATA_NAME setFileName;
-    bool flag = false;
-    for (int i = 0; i < fileNames.size(); i++) {
-        if (fileNames[i].fileTypeName == PLAYER_INIT_DATA_FILE_NAME) {
-            setFileName = fileNames[i];
-            flag = true;
-            break;
-        }
-    }
-
-    if (flag) {
-        PLAYER_DATA changePlayer = mpDataManager->GetFile_PlayerFileDatas(setFileName.fileName)[0];
-
-        std::string playerNumber;
-        switch (mnMenuSelect)
-        {
-        case 0:
-            playerNumber = "0";
-            break;
-        case 1:
-            playerNumber = "1";
-            break;
-        case 2:
-            playerNumber = "2";
-            break;
-        }
-        changePlayer.playerFolderName = (changePlayer.playerFolderName + playerNumber);
-        changePlayer.characterData.templateData.name = (changePlayer.characterData.templateData.name + playerNumber);
-
-        // プレイヤーデータ変更
-        mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-            mpDataManager->GetPlayerData(mnMenuSelect).characterData.templateData.name,
-            changePlayer);
-
-        // プレイヤーファイルデータ削除
-        std::vector<DATA_NAME> deleteFile = mpDataManager->GetFile_fileNameDatas(changePlayer.playerFolderName + "/FileNames_Data.txt");
-        for (int i = 0; i < deleteFile.size(); i++) {
-            mpDataManager->DeleteFile_FileNameData(changePlayer.playerFolderName + "/FileNames_Data.txt", deleteFile[i].fileName, deleteFile[i].fileTypeName.c_str());
-            mpDataManager->Delete_OneFile(deleteFile[i].fileName.c_str(), deleteFile[i].fileTypeName.c_str());
-        }
-
-        mpDataManager->Initilize();
-    }
+    mpDataManager->PlayDataDelete(mnMenuSelect);
 }

@@ -17,7 +17,7 @@
 * @fn コンストラクタ
 */
 MenuPlayerSelect::MenuPlayerSelect()
-: Menu_Base(3, XYGet(0.0f, 0.0f), IntXY_Change_FloatXY(GetScreenSize()), GetColor(50, 150, 255), DX_BLENDMODE_NOBLEND, 255, false, true)
+: Menu_Base(Master::mpGameManager->GetDataManager()->GetPlayerData().size(), XYGet(0.0f, 0.0f), IntXY_Change_FloatXY(GetScreenSize()), GetColor(50, 150, 255), DX_BLENDMODE_NOBLEND, 255, false, true)
 {
 }
 
@@ -132,7 +132,7 @@ void MenuPlayerSelect::SelectDecision()
     /*
     * ここでプレイヤーデータ関連設定
     */
-    if (mpDataManager->GetPlayerData(mnMenuSelect).dataFlag) {
+    if (mpDataManager->GetPlayerData()[mnMenuSelect].dataFlag) {
         MenuCheck* menuCheck = new MenuCheck(*this, &MenuPlayerSelect::SetCheckMenu_0, this);
         menuCheck->Initilize();
     }
@@ -146,9 +146,9 @@ void MenuPlayerSelect::SetOverride_CheckMenuProcess()
 {
     // プレイヤーナンバー設定
     mpSceneManager->SetPlayerDataNumber(mnMenuSelect);
-    // プレイヤーファイルとアイテムを取得
-    mpDataManager->Init_PlayerFileName_And_Item(mnMenuSelect);
+    // データを設定
+    mpDataManager->SetPlayPlayer(mnMenuSelect);
     // シーン移動
-    mpSceneManager->SetNextScene(mpDataManager->GetSceneType(mpDataManager->GetPlayerData(mnMenuSelect).characterData.mapName));
+    mpSceneManager->SetNextScene(mpDataManager->GetPlayPlayerData().characterData.mapType);
 
 }

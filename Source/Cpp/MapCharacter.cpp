@@ -179,7 +179,7 @@ void MenuCheckDedicated_GoScene(Object_Base *object)
     PLAYER_DATA playerData = dataManager->GetPlayPlayerData();
     playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
     playerData.characterData.angle = 0.0f;
-    playerData.characterData.mapName = mapCharacter->GetGoSceneName();
+    playerData.characterData.mapType = mapCharacter->GetGoScene();
 
     dataManager->SetPlayPlayerData(playerData);
 

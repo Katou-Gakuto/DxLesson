@@ -355,8 +355,8 @@ void Menu_Base::DrawPlayerDatas()
         if (mpDataManager->GetPlayerData()[i].dataFlag) {
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (1.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "SAVE DATA %d", i + 1);
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (2.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "PLAYER NAME : %s", mpDataManager->GetPlayerData()[i].characterData.templateData.name.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", mpDataManager->GetPlayerData()[i].characterData.templateData.typeName.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", mpDataManager->GetPlayerData()[i].characterData.mapName.c_str());
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayerData()[i].characterData.templateData.typeNumber));
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", GetMapName(mpDataManager->GetPlayerData()[i].characterData.mapType));
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (5.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "LEVEL:%-4d EXP:%-5d HP:%d", mpDataManager->GetPlayerData()[i].characterData.status.level, mpDataManager->GetPlayerData()[i].characterData.status.exp, mpDataManager->GetPlayerData()[i].characterData.status.hp);
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (6.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "ATTACK:%-4d DEFENSE:%-4d SPEED:%d", mpDataManager->GetPlayerData()[i].characterData.status.attackPower, mpDataManager->GetPlayerData()[i].characterData.status.defense, mpDataManager->GetPlayerData()[i].characterData.status.speed);
 
@@ -382,8 +382,8 @@ void Menu_Base::SetDrawPlayerHandle()
 {
     if (mbDrawPlayerDataFlag) {
         for (int i = 0; i < PLAYER_DATA_NUMBER; i++) {
-            std::string typeName = mpDataManager->GetPlayerData()[i].characterData.templateData.typeName;
-            if (typeName == "RobotPlayer") {
+            CHARACTER_TYPE characterType = (CHARACTER_TYPE)mpDataManager->GetPlayerData()[i].characterData.templateData.typeNumber;
+            if (characterType == CHARACTER_TYPE::ROBOT_PLAYER) {
                 mnDrawPlayerPictureHandle[i] = Master::mpGameManager->GerGraphManager()->GetGraphHandle(GRAPH_TYPE::ROBOT_CHARACTER);
             }
             else {
@@ -418,7 +418,142 @@ void Menu_Base::GameEnd()
 */
 void Menu_Base::TitleGo()
 {
-    Master::mpGameManager->GetDataManager()->Initilize();
+   // Master::mpGameManager->GetDataManager()->Initilize();
     mpSceneManager->SetNextScene(SCENE::TITLE);
     SetDecreaseMenuNumber();
+}
+
+/*
+* @fn GetMapName
+* @drief マップタイプ名取得
+*/
+std::string Menu_Base::GetMapName(SCENE mapType)
+{
+    switch (mapType)
+    {
+    case SCENE::SART:
+        return "SART";
+
+    case SCENE::TITLE:
+        return "TITLE";
+
+    case SCENE::SELECT_SAVE_DATA:
+        return "SELECT_SAVE_DATA";
+
+    case SCENE::DEFAULT_MAP_ONE:
+        return "DEFAULT_MAP_ONE";
+
+    case SCENE::MAP_ONE:
+        return "MAP_ONE";
+            
+    case SCENE::MAP_TWO:
+        return "MAP_TWO";
+            
+    case SCENE::MAP_THREE:
+        return "MAP_THREE";
+            
+    case SCENE::MAP_FOUR:
+        return "MAP_FOUR";
+            
+    case SCENE::MAP_FIVE:
+        return "MAP_FIVE";
+            
+    case SCENE::MAP_SIX:
+        return "MAP_SIX";
+            
+    case SCENE::MAP_SEVEN:
+        return "MAP_SEVEN";
+            
+    case SCENE::MAP_EIGHT:
+        return "MAP_EIGHT";
+            
+    case SCENE::MAP_NINE:
+        return "MAP_NINE";
+            
+    case SCENE::MAP_TEN:
+        return "MAP_TEN";
+            
+    case SCENE::MAP_ELEVEN:
+        return "MAP_ELEVEN";
+            
+    case SCENE::MAP_TWELVE:
+        return "MAP_TWELVE";
+            
+    case SCENE::MAP_THIRTEEN:
+        return "MAP_THIRTEEN";
+            
+    case SCENE::MAP_FOURTEEN:
+        return "MAP_FOURTEEN";
+            
+    case SCENE::MAP_FIFTEEN:
+        return "MAP_FIFTEEN";
+            
+    case SCENE::MAP_SIXTEEN:
+        return "MAP_SIXTEEN";
+            
+    case SCENE::MAP_SEVENTEEN:
+        return "MAP_SEVENTEEN";
+            
+    case SCENE::MAP_EIGHTEEN:
+        return "MAP_EIGHTEEN";
+            
+    case SCENE::MAP_NINETEEN:
+        return "MAP_NINETEEN";
+            
+    case SCENE::MAP_TWENTY:
+        return "MAP_TWENTY";
+            
+    case SCENE::MAP_TWENTY_ONE:
+        return "MAP_TWENTY_ONE";
+            
+    case SCENE::MAP_TWENTY_TWO:
+        return "MAP_TWENTY_TWO";
+            
+    case SCENE::MAP_TWENTY_THREE:
+        return "MAP_TWENTY_THREE";
+            
+    case SCENE::MAP_TWENTY_FOUR:
+        return "MAP_TWENTY_FOUR";
+            //24個
+                    // バトルゲーム1
+    case SCENE::BATTLE_GAME_ONE:
+        return "BATTLE_GAME_ONE";
+               // ボスバトルゲーム1
+    case SCENE::BOSS_BATTLE_GAME_ONE:
+        return "BOSS_BATTLE_GAME_ONE";
+                      // バトルリザルト
+    case SCENE::BATTLE_RESULT:
+        return "BATTLE_RESULT";
+                          // ゲームオーバー
+    case SCENE::GAME_OVER:
+        return "GAME_OVER";
+                         // ゲームクリア
+    case SCENE::GAME_CLEAR:
+        return "GAME_CLEAR";
+                       // ゲーム無し
+    case SCENE::GAME_NOTHING:
+        return "GAME_NOTHING";
+              // 例外
+    case SCENE::EXCEPTION:
+        return "EXCEPTION";
+
+    case SCENE::SCENE_NULL:
+        return "SCENE_NULL";
+    }
+    return "NULL";
+}
+
+/*
+* @fn GetCharacterTypeName
+* @drief キャラクタータイプ名取得
+*/
+std::string Menu_Base::GetCharacterTypeName(int characterType)
+{
+    switch ((CHARACTER_TYPE)characterType)
+    {
+    case CHARACTER_TYPE::ROBOT_PLAYER:
+        return "ロボットプレイヤー";
+    }
+
+    return "NULL";
 }

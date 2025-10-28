@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 
-#include "../Header/Data_Structs.h"
 #include "../Header/Object_Base_Character.h"
+
+struct ItemData;
 
 class Item_Base
 {
@@ -15,7 +16,7 @@ protected:
 	std::string mstrDisplayName;	// 表示用の名前
 
 public:
-	Item_Base(ITEM_DATA item);	// コンストラクタ
+	Item_Base(ItemData item);	// コンストラクタ
 	~Item_Base();	// デストラクタ
 
 	void Draw(int x, int y, int sizeX, int sizeY);	// アイテム画像描画

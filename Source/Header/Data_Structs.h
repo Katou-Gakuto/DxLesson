@@ -92,7 +92,7 @@ typedef struct LevelData
     int characterType;  // キャラクタータイプ
 }LEVEL_DATA;
 
-union DATAS
+struct DATAS
 {
     /*---*  データを全種類持つ  *---*/
     std::vector<DATA_NAME> fileNameDatas;       // ファイルネームデータズ
@@ -102,6 +102,8 @@ union DATAS
 
     DATAS()
     {
+        fileNameDatas.clear();
+        characterDatas.clear();
         levelData.levelNumber.clear();
         levelData.levelUpExpNumber.clear();
         levelData.maxLevelNumber = 0;
@@ -109,6 +111,8 @@ union DATAS
     }
     ~DATAS()
     {
+        fileNameDatas.clear();
+        characterDatas.clear();
         levelData.levelNumber.clear();
         levelData.levelUpExpNumber.clear();
         levelData.maxLevelNumber = 0;
@@ -148,6 +152,8 @@ struct OneData
         fileNameAndType.name.clear();
         fileNameAndType.typeNumber = -1;
 
+        datas.fileNameDatas.clear();
+        datas.characterDatas.clear();
         datas.levelData.levelNumber.clear();
         datas.levelData.levelUpExpNumber.clear();
         datas.levelData.maxLevelNumber = 0;
@@ -159,6 +165,8 @@ struct OneData
         fileNameAndType.name.clear();
         fileNameAndType.typeNumber = -1;
 
+        datas.fileNameDatas.clear();
+        datas.characterDatas.clear();
         datas.levelData.levelNumber.clear();
         datas.levelData.levelUpExpNumber.clear();
         datas.levelData.maxLevelNumber = 0;

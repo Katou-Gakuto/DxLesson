@@ -80,6 +80,9 @@ protected:
 
 	void SetDecisionSoundFlag(bool flag) { mbDecisionSoundFlag = flag; }	// 決定時のサウンドフラグ設定
 	void SetCloseSoundFlag(bool flag) { mbCloseSoundFlag = flag; }	// 閉じる時のサウンドフラグ設定
+
+	std::string GetMapName(SCENE mapType);	// マップタイプ名取得
+	std::string GetCharacterTypeName(int characterType);	// キャラクタータイプ名取得
 public:
 	/// <summary>
 	/// コンストラクタ

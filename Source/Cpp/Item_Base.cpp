@@ -6,7 +6,7 @@
 /*
 * @fn コンストラクタ
 */
-Item_Base::Item_Base(ITEM_DATA item)
+Item_Base::Item_Base(ItemData item)
 : mnItemNumber(item.possessionCount)
 , mstrDisplayName(item.templateData.name)
 {
