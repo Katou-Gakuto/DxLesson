@@ -51,6 +51,7 @@ DataManager::~DataManager()
 		delete mstPlayPlayerData.playerData.item[i];
 	}
 }
+static int Debug_check;
 
 // 初期化
 void DataManager::Init(std::string startFileName)
@@ -87,11 +88,12 @@ void DataManager::Init(std::string startFileName)
 		mstBaseData.oneDatas.push_back(setData);
 		setData.fileNameAndType.name.clear();
 		setData.fileNameAndType.typeNumber = -1;
-
+		Debug_check = 0;
 		// ファイル名に保存されているファイルをすべて取得する
-		for (DATA_NAME fileNameData : mstBaseData.oneDatas[0].datas.fileNameDatas)
+		for (int i = 0; i < mstBaseData.oneDatas[0].datas.fileNameDatas.size(); i++)
 		{
-			setData.fileNameAndType.name = fileNameData.fileName;
+			++Debug_check;
+			setData.fileNameAndType.name = mstBaseData.oneDatas[0].datas.fileNameDatas[i].fileName;
 
 			// ファイルを開ける
 			std::ifstream baseDataFile;
@@ -165,7 +167,7 @@ void DataManager::Save()
 			if (setPlayerFileData.is_open())
 			{
 				// 書き込み
-				setPlayerFileData <<  "プレイヤーデータファイルタイプ";
+				setPlayerFileData <<  (int)DataType::PLAYER;
 				setPlayerFileData << '\n';
 				setPlayerFileData << mstPlayerDatas.size();
 				for (int i = 0; i < mstPlayerDatas.size(); i++) {

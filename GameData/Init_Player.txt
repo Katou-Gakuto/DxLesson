@@ -1,8 +1,8 @@
-INIT_PLAYER_FILE
+3
 1
 0
-RobotPlayer
-Name
+1
+ロボットプレイヤー
 1
 1
 0
@@ -12,7 +12,7 @@ Name
 5
 5
 100
-DEFAULT_MAP_ONE
+3
 0
 0
 0

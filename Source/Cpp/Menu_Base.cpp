@@ -355,8 +355,8 @@ void Menu_Base::DrawPlayerDatas()
         if (mpDataManager->GetPlayerData()[i].dataFlag) {
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (1.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "SAVE DATA %d", i + 1);
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (2.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "PLAYER NAME : %s", mpDataManager->GetPlayerData()[i].characterData.templateData.name.c_str());
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayerData()[i].characterData.templateData.typeNumber));
-            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", GetMapName(mpDataManager->GetPlayerData()[i].characterData.mapType));
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (3.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "CHARACTER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayerData()[i].characterData.templateData.typeNumber).c_str());
+            DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (4.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "MAP NAME : %s", GetMapName(mpDataManager->GetPlayerData()[i].characterData.mapType).c_str());
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (5.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "LEVEL:%-4d EXP:%-5d HP:%d", mpDataManager->GetPlayerData()[i].characterData.status.level, mpDataManager->GetPlayerData()[i].characterData.status.exp, mpDataManager->GetPlayerData()[i].characterData.status.hp);
             DrawFormatString((msLowerRight.x / 6) * 1.05, (msLowerRight.y / 24) * (6.1 + (i * 8)), GetColor(255.0f, 255.0f, 255.0f), "ATTACK:%-4d DEFENSE:%-4d SPEED:%d", mpDataManager->GetPlayerData()[i].characterData.status.attackPower, mpDataManager->GetPlayerData()[i].characterData.status.defense, mpDataManager->GetPlayerData()[i].characterData.status.speed);
 

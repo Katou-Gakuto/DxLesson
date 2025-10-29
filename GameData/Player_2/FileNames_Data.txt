@@ -1,11 +1,2 @@
-FILE_NAMES
-3
-GameData/Player_2/Default_Map_Character_Data.txt
-NOT_PLAYER_CHARACTER_FILE
-DEFAULT_MAP_ONE
-GameData/Player_2/MapEnemyDatas/Map_Enemy4_Data.txt
-NOT_PLAYER_CHARACTER_FILE
-MAP_FOUR
-GameData/Player_2/MapEnemyDatas/Map4_Boss_Data.txt
-NOT_PLAYER_CHARACTER_FILE
-MAP_FOUR
+0
+0

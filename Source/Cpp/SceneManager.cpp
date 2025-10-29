@@ -467,8 +467,6 @@ void SceneManager::NewSceneProcess()
 
     // 生成情報
     GENERATE_INFORATION generateInforation;
-    std::vector<DATA_NAME> playerFileNameData = mpDataManager->GetAllData()[0].datas.fileNameDatas;//->GetFileNames_SceneType(meNowScene); 
-    std::vector<DATA_NAME> baseFileNameData = mpDataManager->GetAllData(true)[0].datas.fileNameDatas;
     
     PLAYER_DATA playerData;
     std::vector<CHARACTER_DATA> characterData;
@@ -534,7 +532,7 @@ void SceneManager::NewSceneProcess()
         // キャラクター入力
         {
             // キャラクタ生成情報入力
-            SetCharacter_StageManager(stageManager, meNowScene, playerFileNameData, baseFileNameData);
+            SetCharacter_StageManager(stageManager, meNowScene, mpDataManager->GetAllData()[0].datas.fileNameDatas, mpDataManager->GetAllData(true)[0].datas.fileNameDatas);
         }
 
         // ステージ生成
@@ -600,7 +598,7 @@ void SceneManager::NewSceneProcess()
         }
 
         // キャラクタ生成情報入力
-        SetCharacter_StageManager(stageManager, meNowScene, playerFileNameData, baseFileNameData);
+        SetCharacter_StageManager(stageManager, meNowScene, mpDataManager->GetAllData()[0].datas.fileNameDatas, mpDataManager->GetAllData(true)[0].datas.fileNameDatas);
 
         // ステージ生成
         stageManager->CharacterGenerate();
