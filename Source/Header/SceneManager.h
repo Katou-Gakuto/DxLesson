@@ -30,8 +30,6 @@ public:
     void SetCharacter_StageManager(StageManagerObject *stageManager, SCENE nowScene, std::vector<DATA_NAME> playerFileNameData, std::vector<DATA_NAME> baseFileNameData);   // キャラクター生成データ入力
     void SetBattleCharacter_StageManager(StageManagerObject *stageManager, CHARACTER_TYPE characterType, VECTOR position_1, VECTOR position_2, VECTOR position_3);  // バトルの敵を生み出す
 
-    bool GetAsyncFlag() { return mbAsyncFlag; } // 非同期フラグ取得
-
     void NewSceneProcess(); // 新しいシーン移行処理
 
     bool GetNowSceneType(std::string sceneType);    // 指定されたシーンタイプと現在のシーンタイプが同じならtrueを返す
@@ -45,10 +43,6 @@ private:
     SCENE meNextScene;  // 次のシーン
 
     int mnPlayerDataNumber;   // 初期値-1
-
-    bool mbAsyncFlag;   // 非同期フラグ
-
-    int mnLoadingHandle;    // ローディング動画ハンドル
 
     DataManager *mpDataManager;	// データマネージャー
 

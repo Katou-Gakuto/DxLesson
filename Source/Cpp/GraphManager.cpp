@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "DxLib.h"
 #include "../Header/GraphManager.h"
 
@@ -69,7 +71,7 @@ int GraphManager::GetGraphNumber(const char* graphFileName, bool getGraphHandleF
 {
 	for (int i = 0; i < GRAPH_TYPE::MAX_GRAPH; i++)
 	{
-		if (graphFileName == mcGraphFileNames[i])
+		if (strcmp(graphFileName, mcGraphFileNames[i]) == 0)
 		{
 			if (getGraphHandleFlag)
 			{

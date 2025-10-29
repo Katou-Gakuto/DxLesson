@@ -86,18 +86,10 @@ void ResultGameEnd::MyInitilize()
             }
             playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
             playerData.characterData.angle = 0.0f;
-            playerData.characterData.templateData.typeNumber = (int)SCENE::DEFAULT_MAP_ONE;
+            playerData.characterData.mapType = SCENE::DEFAULT_MAP_ONE;
         }
         mpDataManager->SetPlayPlayerData(playerData);
-
-
-        //// プレイヤーデータ変更
-        //mpDataManager->ChangeFile_PlayerFileData(mpDataManager->GetFileName_FileType(PLAYER_FILE_NAME, mpDataManager->GetBaseData_FileName()),
-        //    playerData.characterData.templateData.name,
-        ////    playerData);
-
-        //// アイテム設定
-        //mpDataManager->Init_PlayerFileName_And_Item(mpSceneManager->GetPlayerDataNumber());
+        mpDataManager->ReSetItem();
         break;
 
     case SCENE::GAME_NOTHING:

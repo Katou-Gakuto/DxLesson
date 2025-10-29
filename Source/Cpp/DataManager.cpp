@@ -51,7 +51,7 @@ DataManager::~DataManager()
 		delete mstPlayPlayerData.playerData.item[i];
 	}
 }
-static int Debug_check;
+
 
 // 初期化
 void DataManager::Init(std::string startFileName)
@@ -88,11 +88,10 @@ void DataManager::Init(std::string startFileName)
 		mstBaseData.oneDatas.push_back(setData);
 		setData.fileNameAndType.name.clear();
 		setData.fileNameAndType.typeNumber = -1;
-		Debug_check = 0;
+
 		// ファイル名に保存されているファイルをすべて取得する
 		for (int i = 0; i < mstBaseData.oneDatas[0].datas.fileNameDatas.size(); i++)
 		{
-			++Debug_check;
 			setData.fileNameAndType.name = mstBaseData.oneDatas[0].datas.fileNameDatas[i].fileName;
 
 			// ファイルを開ける
@@ -598,6 +597,40 @@ void DataManager::ChangeAllData(std::vector<OneData> data)
 	if (mstPlayPlayerData.dataFlag)
 	{
 		mstPlayPlayerData.oneDatas = data;
+	}
+}
+
+// アイテム再設定
+void DataManager::ReSetItem()
+{
+	for (int i = 0; i < mstPlayPlayerData.playerData.item.size(); i++)
+	{
+		delete mstPlayPlayerData.playerData.item[i];
+	}
+
+	mstPlayPlayerData.playerData.item.clear();
+
+	for (int i = 0; i < mstPlayPlayerData.playerData.itemNumber; i++) {
+
+		Item_Base* itemBase;
+		ITEM_DATA checkItemData = mstPlayPlayerData.playerData.itemData[i];
+
+		switch ((ItemType)checkItemData.templateData.typeNumber)
+		{
+		case ItemType::RECOVERY_MEDICIN_SMALL:
+			itemBase = new ItemRecoveryMedicine(checkItemData, 30);
+			break;
+
+		case ItemType::RECOVERY_MEDICIN_MEDIUM:
+			itemBase = new ItemRecoveryMedicine(checkItemData, 100);
+			break;
+
+		case ItemType::RECOVERY_MEDICIN_LARGE:
+			itemBase = new ItemRecoveryMedicine(checkItemData, 500);
+			break;
+		}
+
+		mstPlayPlayerData.playerData.item.push_back(itemBase);
 	}
 }
 

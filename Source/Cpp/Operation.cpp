@@ -9,6 +9,7 @@ bool Operation::CheckUpKey()
     bool flag = false;
 
     flag |= (CheckHitKey(KEY_INPUT_UP) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_W) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_UP) != 0);
 
@@ -22,6 +23,7 @@ bool Operation::CheckDownKey()
     bool flag = false;
 
     flag |= (CheckHitKey(KEY_INPUT_DOWN) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_S) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_DOWN) != 0);
 
@@ -35,6 +37,7 @@ bool Operation::CheckRightKey()
     bool flag = false;
 
     flag |= (CheckHitKey(KEY_INPUT_RIGHT) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_D) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_RIGHT) != 0);
 
@@ -48,6 +51,7 @@ bool Operation::CheckLeftKey()
     bool flag = false;
 
     flag |= (CheckHitKey(KEY_INPUT_LEFT) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_A) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_LEFT) != 0);
 
@@ -61,14 +65,9 @@ bool Operation::CheckLKey()
 {
     bool flag = false;
 
-    flag |= (CheckHitKey(KEY_INPUT_L) == 1);
-    flag |= (CheckHitKey(KEY_INPUT_O) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_Q) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_5) != 0);
-
-    // å„Ç≈è¡Ç∑ ---
-    //flag |= (CheckHitKey(KEY_INPUT_O) == 1);
-    //          ---
 
     return flag;
 }
@@ -79,14 +78,9 @@ bool Operation::CheckRKey()
 {
     bool flag = false;
 
-    flag |= (CheckHitKey(KEY_INPUT_R) == 1);
-    flag |= (CheckHitKey(KEY_INPUT_P) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_E) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_6) != 0);
-
-    // å„Ç≈è¡Ç∑ ---
-    //flag |= (CheckHitKey(KEY_INPUT_P) == 1);
-    //          ---
 
     return flag;
 }
@@ -98,7 +92,8 @@ bool Operation::CheckAKey()
 {
     bool flag = false;
 
-    flag |= (CheckHitKey(KEY_INPUT_A) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_L) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_RETURN) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) != 0);
 
@@ -111,7 +106,7 @@ bool Operation::CheckBKey()
 {
     bool flag = false;
 
-    flag |= (CheckHitKey(KEY_INPUT_B) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_BACK) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_1) != 0);
 

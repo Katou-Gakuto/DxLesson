@@ -35,7 +35,6 @@ SceneManager::SceneManager()
 : meNowScene(SCENE::SART)
 , meNextScene(SCENE::SART)
 , mnPlayerDataNumber(-1)
-, mbAsyncFlag(false)
 {
     mpDataManager = Master::mpGameManager->GetDataManager();
 
@@ -44,8 +43,6 @@ SceneManager::SceneManager()
     mfMapMaxSize = 10000.0f;//3000.0f;//
 
     mfMagnificationRate = ((mfMapMaxSize/*plusPosition.x*/ + mfMapMaxSize/*plusPosition.z*/) / 2) / 5;   // 拡大率
-
-    mnLoadingHandle = LoadGraph("Resource/2D/Loading.jpg");
 }
 
 /*
@@ -53,7 +50,6 @@ SceneManager::SceneManager()
 */
 SceneManager::~SceneManager()
 {
-    DeleteGraph(mnLoadingHandle);
 }
 
 /*
@@ -103,75 +99,10 @@ void SceneManager::CheckScene()
         return;
     }
 
-    mbAsyncFlag = true;
     Master::mpGameManager->GetTimeManager()->SetNewSceneTimeFlag(true);
-    //SetUseASyncLoadFlag(TRUE);
 
-    {
-        // 画面サイズ取得
-        int width = 640;
-        int height = 480;
-        int colorBit = 0;
-        GetScreenState(&width, &height, &colorBit);
-        
-        // 画面クリア
-        ClearDrawScreen();
-
-        DrawExtendGraph(1, 1, width, height, mnLoadingHandle, FALSE);
-
-        // 表示
-        ScreenFlip();
-    }
-
-    SetAsyncFunction();
-    // 非同期
-//    std::future<void> future = std::async(SetAsyncFunction);
-
-    //// 再生時間設定
-    //SeekMovieToGraph(mnLoadingHandle, 0);
-    //// 再生
-    //PlayMovieToGraph(mnLoadingHandle);
-
-    //// 画面サイズ取得
-    //int width = 640;
-    //int height = 480;
-    //int colorBit = 0;
-    //GetScreenState(&width, &height, &colorBit);
-    int drawNumber = 0;
-
-    while (mbAsyncFlag /*|| (GetASyncLoadNum() != 0)*/) {
-
-        // 時間更新
-        Master::mpGameManager->GetTimeManager()->Update();
-
-        //
-        //if (GetMovieStateToGraph(mnLoadingHandle) == 0) {
-        //    // 再生時間設定
-        //    SeekMovieToGraph(mnLoadingHandle, 0);
-        //    // 再生
-        //    PlayMovieToGraph(mnLoadingHandle);
-        //}
-
-        // 画面クリア
-        ClearDrawScreen();
-
-
-        DrawBox(0,0, 10,10, GetColor(0, 255, 0), TRUE);
-
-        //DrawFormatString(0, 0, GetColor(0, 0, 0), "%d", GetASyncLoadNum());
-        for (int i = 0; i < drawNumber; i++) {
-        }
-
-        // 表示
-        ScreenFlip();
-
-        // １７ミリ秒(約秒間６０フレームだった時の１フレームあたりの経過時間)
-        // 経過するまでここで待つ
-        while (GetNowCount() - Master::mpGameManager->GetTimeManager()->GetPreviousTime() < Master::mpGameManager->GetTimeManager()->GetOneFrame())
-        {
-        }
-    }
-//    SetUseASyncLoadFlag(FALSE);
+    // 新しいシーンに移行
+    NewSceneProcess();
 }
 
 /*
@@ -842,8 +773,6 @@ void SceneManager::NewSceneProcess()
         Master::mpGameManager->GetSoundManager()->SetSound(SOUND::SCORE);
         break;
     }
-
-    mbAsyncFlag = false;
 }
 
 
@@ -920,7 +849,7 @@ void SceneManager::SetTowerObject(VECTOR plusPosition, int modelNumber, const ch
 PLAYER_DATA SceneManager::SetPlayer(GENERATE_INFORATION* generateInforation, PLAYER_DATA playerData, CHARACTER_TYPE characterType)
 {
     generateInforation->survivalFlag = playerData.characterData.survivalFlag;
-    generateInforation->characterType = CHARACTER_TYPE::MAP_PLAYER; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
+    generateInforation->characterType = characterType; //GetCharacterType(playerData.characterData.templateData.typeName); // ここもいじるキャラモデルの変更など
     generateInforation->GeneratePosition = playerData.characterData.position;
     generateInforation->angle = playerData.characterData.angle;
     generateInforation->status = playerData.characterData.status;

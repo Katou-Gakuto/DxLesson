@@ -60,6 +60,7 @@ void ResultBattle::MyInitilize()
         }
 
         mpDataManager->SetPlayPlayerData(playerData);
+        mpDataManager->ReSetItem();
     }
 
     //// プレイヤーデータ変更

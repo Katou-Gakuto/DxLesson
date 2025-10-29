@@ -78,6 +78,8 @@ public:
 	// 全データを変更
 	void ChangeAllData(std::vector<OneData> data);
 
+	// アイテム再設定
+	void ReSetItem();
 	// 削除アイテム設定
 	void SetDeleteItem(std::string name);
 	// 削除する必要があるアイテムを削除する

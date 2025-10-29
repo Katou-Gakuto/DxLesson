@@ -102,9 +102,9 @@ void EnemyMap::Update()
             if (mpPlayer != nullptr)
             {
                 PLAYER_DATA playerData = Master::mpGameManager->GetDataManager()->GetPlayPlayerData();
-                playerData.characterData.position = mpPlayer->GetObjectPosition();
+                playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
                 playerData.characterData.status = mpPlayer->GetStatus();
-                playerData.characterData.angle = mpPlayer->GetObjectAngle();
+                playerData.characterData.angle = 0.0f;
 
                 Master::mpGameManager->GetDataManager()->SetPlayPlayerData(playerData);
             }
