@@ -134,7 +134,14 @@ void MenuPlay::MyDraw()
 
         // 選択文字
         DrawStringToHandle((GetScreenSize().x / 10) * 1.2, (GetScreenSize().y / 10) * 3.2, "PLAYER DATA", ((mnMenuSelect == 0) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
-        DrawStringToHandle((GetScreenSize().x / 10) * 2, (GetScreenSize().y / 10) * 5.2, "SAVE", ((mnMenuSelect == 1) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
+        if (mpSceneManager->GetNowSceneType("MAP"))
+        {
+            DrawStringToHandle((GetScreenSize().x / 10) * 2, (GetScreenSize().y / 10) * 5.2, "SAVE", ((mnMenuSelect == 1) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
+        }
+        else
+        {
+            DrawStringToHandle((GetScreenSize().x / 10) * 2, (GetScreenSize().y / 10) * 5.2, "SAVE", GetColor(100, 100, 100), mnSelectHandle);
+        }
         DrawStringToHandle((GetScreenSize().x / 10) * 1.9, (GetScreenSize().y / 10) * 7.2, "CLOSE", ((mnMenuSelect == 2) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
         DrawStringToHandle((GetScreenSize().x / 10) * 7, (GetScreenSize().y / 10) * 3.2, "ITEM", ((mnMenuSelect == 3) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
         DrawStringToHandle((GetScreenSize().x / 10) * 6.8, (GetScreenSize().y / 10) * 5.2, "SYSTEM", ((mnMenuSelect == 4) ? GetColor(200, 200, 200) : GetColor(255, 255, 255)), mnSelectHandle);
@@ -174,9 +181,12 @@ void MenuPlay::SelectDecision()
         mnSelectManager += 1;
         break;
     case 1: // セーブ
-        MenuCheck * saveCheck;
-        saveCheck = new MenuCheck(*this, &MenuPlay::SetCheckMenu_0, this);
-        saveCheck->Initilize();
+        if (mpSceneManager->GetNowSceneType("MAP"))
+        {
+            MenuCheck* saveCheck;
+            saveCheck = new MenuCheck(*this, &MenuPlay::SetCheckMenu_0, this);
+            saveCheck->Initilize();
+        }
         break;
     case 2: // メニュー終了
         SetDeleteFlag(true);
@@ -209,19 +219,20 @@ void MenuPlay::SetOverride_CheckMenuProcess()
     // プレイヤーデータセーブ
     {
         // プレイヤー取得
-        Object_Base_Character *player = Master::mpGameManager->GetObjectManager()->FindByTag_CharacterObject(PLAYER_TAG);
+        Object_Base_Character* player = Master::mpGameManager->GetObjectManager()->FindByTag_CharacterObject(PLAYER_TAG);
 
         // プレイヤー情報入力
         PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
 
 
         playerData.characterData.status = player->GetStatus();
-        // マップのみ場所を入力
-        if (mpSceneManager->GetNowSceneType("MAP")) {
-            playerData.characterData.position = player->GetObjectPosition();
-            playerData.characterData.angle = player->GetObjectAngle();
-        }
 
+        // マップ情報を入力
+        playerData.characterData.position = player->GetObjectPosition();
+        playerData.characterData.angle = player->GetObjectAngle();
+        playerData.characterData.mapType = mpSceneManager->GetNowScene();
+
+        mpDataManager->SetPlayPlayerData(playerData);
         mpDataManager->Save();
 
         //// プレイヤーデータ変更

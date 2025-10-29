@@ -552,7 +552,7 @@ std::string Menu_Base::GetCharacterTypeName(int characterType)
     switch ((CHARACTER_TYPE)characterType)
     {
     case CHARACTER_TYPE::ROBOT_PLAYER:
-        return "ロボットプレイヤー";
+        return "ROBOT";
     }
 
     return "NULL";

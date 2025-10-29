@@ -384,6 +384,8 @@ void DataManager::PlayDataDelete(int playerNumber)
 		}
 	}
 
+	mstPlayPlayerData.playerData.dataFlag = false;
+
 	/*
 	* 【プレイヤーデータクリアした後にセーブする】
 	*/
