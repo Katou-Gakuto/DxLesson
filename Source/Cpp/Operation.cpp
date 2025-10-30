@@ -92,8 +92,7 @@ bool Operation::CheckAKey()
 {
     bool flag = false;
 
-    flag |= (CheckHitKey(KEY_INPUT_L) == 1);
-    flag |= (CheckHitKey(KEY_INPUT_RETURN) == 1);
+    flag |= (CheckHitKey(KEY_INPUT_SPACE) == 1);
 
     flag |= ((GetJoypadInputState(DX_INPUT_PAD1) & PAD_INPUT_2) != 0);
 
