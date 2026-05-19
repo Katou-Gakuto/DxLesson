@@ -17,7 +17,7 @@ protected:
 
 public:
 	Item_Base(ItemData item);	// コンストラクタ
-	~Item_Base();	// デストラクタ
+	virtual ~Item_Base();	// デストラクタ
 
 	void Draw(int x, int y, int sizeX, int sizeY);	// アイテム画像描画
 

@@ -82,6 +82,11 @@ typedef struct Player_Data
     // アイテム
     std::vector<Item_Base *> item;
 
+    // 次のシーンのポジション
+    VECTOR nextScenePos;
+    // 次のシーンのアングル
+    float nextSceneAngle;
+
 }PLAYER_DATA;
 
 typedef struct LevelData

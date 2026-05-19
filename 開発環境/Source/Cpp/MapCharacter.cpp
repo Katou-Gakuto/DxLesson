@@ -178,7 +178,9 @@ void MenuCheckDedicated_GoScene(Object_Base *object)
 
     PLAYER_DATA playerData = dataManager->GetPlayPlayerData();
     playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
+    playerData.nextScenePos = playerData.characterData.position;
     playerData.characterData.angle = 0.0f;
+    playerData.nextSceneAngle = playerData.characterData.angle;
     playerData.characterData.mapType = mapCharacter->GetGoScene();
 
     dataManager->SetPlayPlayerData(playerData);
@@ -190,6 +192,7 @@ void MenuCheckDedicated_GoScene(Object_Base *object)
         {
             if (characterdata.datas.characterDatas[i].templateData.name == mapCharacter->GetCharacterName())
             {
+                characterdata.dataChangeFlag = true;
                 characterdata.datas.characterDatas.erase(characterdata.datas.characterDatas.begin() + i);
                 break;
             }

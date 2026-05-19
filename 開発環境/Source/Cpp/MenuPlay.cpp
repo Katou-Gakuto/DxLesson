@@ -155,7 +155,7 @@ void MenuPlay::MyDraw()
         DrawStringToHandle((GetScreenSize().x / 10) * 6.5, (GetScreenSize().y / 10) * 8.1, "\"B\"CLOSE", GetColor(0, 0, 0), mnMenuHandle);
 
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.2,  GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER NAME : %s", mpDataManager->GetPlayPlayerData().characterData.templateData.name.c_str());
-        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.97, GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayPlayerData().characterData.templateData.typeNumber));
+        DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 1.97, GetColor(0, 0, 0), mnPlayerDataHandle, "PLAYER TYPE : %s", GetCharacterTypeName(mpDataManager->GetPlayPlayerData().characterData.templateData.typeNumber).c_str());
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 2.74, GetColor(0, 0, 0), mnPlayerDataHandle, "LEVEL       : %d", mpPlayer->GetStatus().level);
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 3.51, GetColor(0, 0, 0), mnPlayerDataHandle, "EXP         : %d", mpPlayer->GetStatus().exp);
         DrawFormatStringToHandle((GetScreenSize().x / 10) * 0.9, (GetScreenSize().y / 10) * 4.28, GetColor(0, 0, 0), mnPlayerDataHandle, "ATTACK      : %d", mpPlayer->GetStatus().attackPower);

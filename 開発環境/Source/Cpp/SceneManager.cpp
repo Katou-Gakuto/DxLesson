@@ -850,8 +850,8 @@ PLAYER_DATA SceneManager::SetPlayer(GENERATE_INFORATION* generateInforation, PLA
 {
     generateInforation->survivalFlag = playerData.characterData.survivalFlag;
     generateInforation->characterType = characterType; //GetCharacterType(playerData.characterData.templateData.typeName); // ‚±‚±‚à‚¢‚¶‚éƒLƒƒƒ‰ƒ‚ƒfƒ‹‚Ì•ÏX‚È‚Ç
-    generateInforation->GeneratePosition = playerData.characterData.position;
-    generateInforation->angle = playerData.characterData.angle;
+    generateInforation->GeneratePosition = playerData.nextScenePos;
+    generateInforation->angle = playerData.nextSceneAngle;
     generateInforation->status = playerData.characterData.status;
     generateInforation->name = playerData.characterData.templateData.name;
     generateInforation->scene = playerData.characterData.mapType;

@@ -158,30 +158,33 @@ void DataManager::Save()
 		{
 			mstPlayerDatas[mnPlayPlayerDataNumber] = mstPlayPlayerData.playerData;
 
-			// プレイヤー全データをファイルに書き込み	
-			// ファイルを開ける
-			std::ofstream setPlayerFileData;
-			setPlayerFileData.open(mstrPlayerDatasFileName, std::ios_base::out);
+			// プレイヤー全データをファイルに書き込み
+			{		
+				// ファイルを開ける
+				std::ofstream setPlayerFileData;
+				setPlayerFileData.open(mstrPlayerDatasFileName, std::ios_base::out);
 
-			if (setPlayerFileData.is_open())
-			{
-				// 書き込み
-				setPlayerFileData <<  (int)DataType::PLAYER;
-				setPlayerFileData << '\n';
-				setPlayerFileData << mstPlayerDatas.size();
-				for (int i = 0; i < mstPlayerDatas.size(); i++) {
-					// 書き込み処理
-					SetPlayerFileData(mstPlayerDatas[i], &setPlayerFileData);
+				if (setPlayerFileData.is_open())
+				{
+					// 書き込み
+					setPlayerFileData << (int)DataType::PLAYER;
+					setPlayerFileData << '\n';
+					setPlayerFileData << mstPlayerDatas.size();
+					for (int i = 0; i < mstPlayerDatas.size(); i++) {
+						// 書き込み処理
+						SetPlayerFileData(mstPlayerDatas[i], &setPlayerFileData);
+					}
 				}
-			}
-			else
-			{
-				mbFailureFlag = true;
-				return;
+				else
+				{
+					mbFailureFlag = true;
+					return;
+				}
+
+				// ファイル閉じる
+				setPlayerFileData.close();
 			}
 
-			// ファイル閉じる
-			setPlayerFileData.close();
 
 
 			// 変更したデータをファイルに入れる
@@ -195,7 +198,7 @@ void DataManager::Save()
 
 					if (setPlayerFileData.is_open())
 					{
-							SetOneFileData(oneData, &setPlayerFileData);
+						SetOneFileData(oneData, &setPlayerFileData);
 					}
 					else
 					{
@@ -294,12 +297,12 @@ void DataManager::SetPlayPlayer(int playerNumber)
 
 			nameDataFile.close();
 			mstPlayPlayerData.oneDatas.push_back(setData);
-			setData.fileNameAndType.name.clear();
+			setData.fileNameAndType.name = "";
 			setData.fileNameAndType.typeNumber = -1;
 
-
+			DATAS fileDatas = mstPlayPlayerData.oneDatas[0].datas;
 			// ファイル名に保存されているファイルをすべて取得する
-			for (DATA_NAME fileNameData : mstPlayPlayerData.oneDatas[0].datas.fileNameDatas)
+			for (DATA_NAME& fileNameData : fileDatas.fileNameDatas)
 			{
 				setData.fileNameAndType.name = fileNameData.fileName;
 
@@ -541,7 +544,8 @@ std::vector<OneData> DataManager::GetSceneData(SCENE sceneName)
 						DATA_NAME setFileName;
 						setFileName.sceneType = sceneName;
 						setFileName.fileName = setData.fileNameAndType.name;
-						setFileName.fileTypeName = setData.fileNameAndType.typeNumber;
+						setFileName.fileTypeName = FileTypeNumberToFileTypeName(setData.fileNameAndType.typeNumber);
+						mstPlayPlayerData.oneDatas[0].dataChangeFlag = true;
 						mstPlayPlayerData.oneDatas[0].datas.fileNameDatas.push_back(setFileName);
 						break;
 					}
@@ -864,7 +868,7 @@ void DataManager::SetOneFileData(OneData setData, std::ofstream* file)
 			/*
 			* 【必要シーンを設定】
 			*/
-			*file << "シーン";// 仮
+			*file << (int)setData.datas.fileNameDatas[i].sceneType;// 仮
 		}
 		break;
 	}
@@ -892,6 +896,8 @@ PLAYER_DATA DataManager::GetPlayerFileData(std::ifstream* file)
 	*file >> setPlayerData.characterData.position.y;  // 居る場所Y軸
 	*file >> setPlayerData.characterData.position.z;  // 居る場所Z軸
 	*file >> setPlayerData.characterData.angle;  // 見ている方向
+	setPlayerData.nextScenePos = setPlayerData.characterData.position;
+	setPlayerData.nextSceneAngle = setPlayerData.characterData.angle;
 	*file >> setPlayerData.playerFolderName; // プレイヤー情報があるフォルダー名
 
 	*file >> setPlayerData.itemNumber;   // アイテムの数
@@ -962,4 +968,28 @@ void DataManager::SetPlayerFileData(PLAYER_DATA setData, std::ofstream* file)
 		*file << '\n';
 		*file << setData.itemData[i].itemPhotoFileName;
 	}
+}
+
+// ファイルタイプナンバーをファイルタイプネームに変換
+std::string DataManager::FileTypeNumberToFileTypeName(int fileTypeNumber)
+{
+	switch (fileTypeNumber)
+	{
+	case 0:
+		return FILE_NAMES_FILE_NAME;
+
+	case 1:
+		return NOT_PLAYER_CHARACTER_FILE_NAME;
+
+	case 2:
+		return PLAYER_FILE_NAME;
+
+	case 3:
+		return PLAYER_INIT_DATA_FILE_NAME;
+
+	case 4:
+		return LEVEL_FILE_NAME;
+	}
+
+	return "NULL";
 }

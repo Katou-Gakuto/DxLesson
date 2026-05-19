@@ -102,4 +102,7 @@ private:
 	PLAYER_DATA GetPlayerFileData(std::ifstream* file);
 	/*ファイルデータ書き込み用(プレイヤーデータ)*/
 	void SetPlayerFileData(PLAYER_DATA setData, std::ofstream* file);
+
+	/*ファイルタイプナンバーをファイルタイプネームに変換*/
+	std::string FileTypeNumberToFileTypeName(int fileTypeNumber);
 };

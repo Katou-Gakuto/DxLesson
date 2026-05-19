@@ -223,7 +223,10 @@ void ResultBattle::SelectDecision()
     //{
     //case ResultBattle::MAP:
  
-
+    PLAYER_DATA playerData = mpDataManager->GetPlayPlayerData();
+    playerData.nextScenePos = playerData.characterData.position;
+    playerData.nextSceneAngle = playerData.characterData.angle;
+    mpDataManager->SetPlayPlayerData(playerData);
     // マップにシーン移動
     mpSceneManager->SetNextScene(mpDataManager->GetPlayPlayerData().characterData.mapType);
 

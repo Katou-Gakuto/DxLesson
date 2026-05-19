@@ -85,7 +85,9 @@ void ResultGameEnd::MyInitilize()
                 playerData = GetPlayer_ItemPlus(playerData);
             }
             playerData.characterData.position = VGet(0.0f, 0.0f, 0.0f);
+            playerData.nextScenePos = playerData.characterData.position;
             playerData.characterData.angle = 0.0f;
+            playerData.nextSceneAngle = playerData.characterData.angle;
             playerData.characterData.mapType = SCENE::DEFAULT_MAP_ONE;
         }
         mpDataManager->SetPlayPlayerData(playerData);
