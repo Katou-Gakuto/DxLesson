@@ -354,7 +354,7 @@ void DataManager::SetPlayPlayerData(PLAYER_DATA data)
 	mstPlayPlayerData.playerData = data;
 }
 
-// プレイ中に設定されたデータを削除する
+// プレイヤーデータを削除する
 void DataManager::PlayDataDelete(int playerNumber)
 {
 	if (playerNumber >= mstPlayerDatas.size())
@@ -377,6 +377,7 @@ void DataManager::PlayDataDelete(int playerNumber)
 				{
 					if (mstPlayPlayerData.oneDatas[j].fileNameAndType.name == mstPlayPlayerData.oneDatas[0].datas.fileNameDatas[i].fileName)
 					{
+						std::remove(mstPlayPlayerData.oneDatas[j].fileNameAndType.name.c_str());
 						// vectorから削除
 						mstPlayPlayerData.oneDatas.erase(mstPlayPlayerData.oneDatas.begin() + j);
 						break;
@@ -384,6 +385,9 @@ void DataManager::PlayDataDelete(int playerNumber)
 				}
 			}
 		}
+
+		mstPlayPlayerData.oneDatas[0].dataChangeFlag = true;
+		mstPlayPlayerData.oneDatas[0].datas.fileNameDatas.clear();
 	}
 
 	mstPlayPlayerData.playerData.dataFlag = false;

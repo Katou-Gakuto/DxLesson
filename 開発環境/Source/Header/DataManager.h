@@ -60,7 +60,7 @@ public:
 	// プレイプレイヤーデータ設定
 	void SetPlayPlayerData(PLAYER_DATA data);
 
-	// プレイ中に設定されたデータを削除する
+	// プレイヤーデータを削除する
 	void PlayDataDelete(int playerNumber);
 
 	// 初期化用プレイヤーデータ取得
