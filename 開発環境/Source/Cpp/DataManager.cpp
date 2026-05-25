@@ -156,7 +156,7 @@ void DataManager::Save()
 	{
 		if (mstPlayPlayerData.dataFlag)
 		{
-			mstPlayerDatas[mnPlayPlayerDataNumber] = mstPlayPlayerData.playerData;
+			mstPlayerDatas[mnPlayPlayerDataNumber] = PLAYER_DATA::PlayerData_To_SaveData(mstPlayPlayerData.playerData);
 
 			// プレイヤー全データをファイルに書き込み
 			{		
@@ -218,7 +218,7 @@ void DataManager::ChangePlayerData(PLAYER_DATA data, int playerNumber)
 {
 	if (mstPlayerDatas.size() > playerNumber)
 	{
-		mstPlayerDatas[playerNumber] = data;
+		mstPlayerDatas[playerNumber] = PLAYER_DATA::PlayerData_To_SaveData(data);
 	}
 }
 

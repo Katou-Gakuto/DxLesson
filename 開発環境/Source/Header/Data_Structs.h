@@ -87,6 +87,13 @@ typedef struct Player_Data
     // 次のシーンのアングル
     float nextSceneAngle;
 
+    static Player_Data PlayerData_To_SaveData(Player_Data playerData)
+    {
+        playerData.item.clear();
+
+        return playerData;
+    }
+
 }PLAYER_DATA;
 
 typedef struct LevelData
